@@ -1,0 +1,39 @@
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore XAMPP and local environment files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Ignore PHPStorm and VSCode project files
+.idea/
+.vscode/
+
+# Ignore Composer dependencies (if used)
+vendor/
+
+# Ignore node_modules (if any frontend uses Node.js)
+node_modules/
+
+# Ignore environment and sensitive config files
+.env
+.env.*
+BACKEND/db/connect.php
+
+# Ignore SQL dumps and backups
+*.sql
+*.sqlite
+*.db
+
+# Ignore user file uploads and images
+BACKEND/images/
+
+# Ignore session files
+sess_*
+
+# Ignore any other sensitive or local-only files
+/private/
+/secrets/

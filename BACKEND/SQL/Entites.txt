@@ -1,0 +1,121 @@
+1️⃣ CATEGORY
+
+Table: category
+
+Attributes:
+
+category_id (Primary Key)
+
+category_name
+
+2️⃣ SUPPLIER
+
+Table: supplier
+
+Attributes:
+
+supplier_id (Primary Key)
+
+supplier_name
+
+supplier_contact
+
+3️⃣ PRODUCT
+
+Table: product
+
+Attributes:
+
+product_id (Primary Key)
+
+product_name
+
+price
+
+category_id (Foreign Key → category.category_id)
+
+supplier_id (Foreign Key → supplier.supplier_id)
+
+4️⃣ CUSTOMER
+
+Table: customer
+
+Attributes:
+
+customer_id (Primary Key)
+
+customer_name
+
+customer_contact
+
+5️⃣ SALES
+
+Table: sales
+
+Attributes:
+
+sales_id (Primary Key)
+
+sales_date
+
+quantity
+
+price
+
+customer_id (Foreign Key → customer.customer_id)
+
+product_id (Foreign Key → product.product_id)
+
+6️⃣ PURCHASE
+
+Table: purchase
+
+Attributes:
+
+purchase_id (Primary Key)
+
+purchase_date
+
+quantity
+
+price
+
+product_id (Foreign Key → product.product_id)
+
+7️⃣ STOCK
+
+Table: stock
+
+Attributes:
+
+stock_id (Primary Key)
+
+product_id (Foreign Key → product.product_id)
+
+warehouse_id (Foreign Key → warehouse.warehouse_id)
+
+quantity
+
+8️⃣ WAREHOUSE
+
+Table: warehouse
+
+Attributes:
+
+warehouse_id (Primary Key)
+
+warehouse_name
+
+location
+
+🔗 Relationship Summary (VERY IMPORTANT)
+Parent Table	Child Table	Type
+category	product	1 → Many
+supplier	product	1 → Many
+customer	sales	1 → Many
+product	sales	1 → Many
+product	purchase	1 → Many
+product	stock	1 → Many
+warehouse	stock	1 → Many
+
+✔ Foreign keys ALWAYS go in the child tables
