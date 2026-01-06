@@ -2,5 +2,6 @@
 session_start();
 session_unset();
 session_destroy();
-header("Location: login.php");
+echo '<script>alert("You have been logged out."); window.location.href = "/INVENTORY_SYSTEM/FRONTEND/pages/login.html";</script>';
+exit();
 ?>

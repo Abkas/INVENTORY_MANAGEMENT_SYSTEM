@@ -3,7 +3,7 @@ session_start();
 
 // Protection logic
 if (!isset($_SESSION['user'])) {
-    header("Location: ../frontend/login.html");
+    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
     exit();
 }
 ?>
@@ -25,7 +25,7 @@ if (!isset($_SESSION['user'])) {
     <li>Manage Stock</li>
 </ul>
 
-<a href="logout.php">Logout</a>
+<a href="/INVENTORY_SYSTEM/BACKEND/user/logout.php">Logout</a>
 
 </body>
 </html>

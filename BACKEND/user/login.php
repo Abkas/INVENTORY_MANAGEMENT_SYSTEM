@@ -21,10 +21,12 @@ $user = mysqli_fetch_assoc($result);
 
 if ($user && verifyPassword($password, $user['password'])) {
     $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
-    header("Location: index.php");
+    $_SESSION['user'] = $user['username'];
+
+    echo '<script>alert("Login successful!"); window.location.href = "/INVENTORY_SYSTEM/BACKEND/index.php";</script>';
     exit;
 } else {
-    echo "Invalid login";
+    echo '<script>alert("Invalid username or password."); window.history.back();</script>';
+    exit();
 }
 ?>

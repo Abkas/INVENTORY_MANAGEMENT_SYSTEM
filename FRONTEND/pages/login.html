@@ -8,11 +8,13 @@
 
 <h2>Login</h2>
 
-<form action="../backend/login.php" method="POST">
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
+<form action="/INVENTORY_SYSTEM/BACKEND/user/login.php" method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Login</button>
 </form>
+
+<p>Don't have an account? <a href="/INVENTORY_SYSTEM/FRONTEND/pages/register.html">Register here</a></p>
 
 </body>
 </html>
