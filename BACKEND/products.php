@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
+    header("Location: /INVENTORY_SYSTEM/BACKEND/user/login.php");
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
@@ -41,20 +41,25 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="css/products.css">
+    <link rel="stylesheet" href="css/products.css"> 
 </head>
-<body style="margin:0; padding:0;">
-<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
-<div class="container" style="margin-left:220px;">
+<body>
+<div class="container">
         <div class="header">
-                <div>
-                        <div class="header-title">Products</div>
-                        <div class="header-sub">Manage your product catalog</div>
-                </div>
-                <button class="add-btn" onclick="document.getElementById('addProductModal').style.display='block'">Add Product</button>
+        <div>
+        <div class="header-title">Products</div>
+        <div class="header-sub">Manage your product catalog</div>
+        </div>
+        <button class="add-btn" onclick="document.getElementById('addProductModal').style.display='block'">Add Product</button>
         </div>
 
+        <?php include __DIR__ . '/components/sidebar.php'; ?>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-content">
 
         <!-- Product Card Grid -->
         <div class="product-card-grid">
