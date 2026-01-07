@@ -1,0 +1,99 @@
+/* Warehouse Page Layout Styles */
+.container {
+    max-width: 1100px;
+    margin: 2.5rem auto;
+    padding: 2rem 2.5rem;
+    background: #f8fafd;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.header-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #23272f;
+}
+.header-sub {
+    font-size: 1.1rem;
+    color: #6c6f7a;
+    margin-top: 0.2rem;
+}
+.add-btn {
+    background: #23272f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.add-btn:hover {
+    background: #444;
+}
+.main-content {
+    margin-top: 1.5rem;
+}
+.warehouse-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 22px;
+}
+.modal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.18);
+    display: none;
+    z-index: 1000;
+}
+.modal-content {
+    background: #fff;
+    border-radius: 10px;
+    max-width: 420px;
+    margin: 5% auto;
+    padding: 2rem 2.2rem;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+}
+.modal-label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #23272f;
+}
+.modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.2rem;
+}
+.modal-cancel {
+    background: #eee;
+    color: #23272f;
+    border: none;
+    border-radius: 5px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+}

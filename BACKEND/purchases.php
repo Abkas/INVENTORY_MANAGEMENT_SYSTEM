@@ -5,47 +5,28 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
-// Handle add purchase
-// Handle add purchase and update stock
 $error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['purchase_date'], $_POST['quantity'], $_POST['total_price'], $_POST['product_id'], $_POST['supplier_id'])) {
-   
-    $purchase_date = trim($_POST['purchase_date']);
-    $quantity = intval($_POST['quantity']);
-    $total_price = trim($_POST['total_price']);
-    $product_id = intval($_POST['product_id']);
-    $supplier_id = intval($_POST['supplier_id']);
-    $user_id = $_SESSION['user_id'];
 
-    if ($purchase_date !== '' && $quantity > 0 && $total_price !== '' && $product_id > 0 && $supplier_id > 0) {
-        // Insert purchase
-        mysqli_query(
-            $conn, 
-            "INSERT INTO purchase (purchase_date, quantity, total_price, product_id, supplier_id, user_id) 
-            VALUES ('$purchase_date', '$quantity', '$total_price', '$product_id', '$supplier_id', '$user_id')"
-            );
+// Handle add purchase and update stock
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $purchase_date = trim($_POST['purchase_date'] ?? '');
+    $quantity = intval($_POST['quantity'] ?? 0);
+    $total_price = trim($_POST['total_price'] ?? '');
+    $product_id = intval($_POST['product_id'] ?? 0);
+    $user_id = $_SESSION['user_id'] ?? 1;
+
+    if ($purchase_date && $quantity > 0 && $total_price !== '' && $product_id > 0) {
+        $stmt = $conn->prepare("INSERT INTO purchase (purchase_date, quantity, total_price, product_id, user_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param('sidii', $purchase_date, $quantity, $total_price, $product_id, $user_id);
+        $stmt->execute();
+        $stmt->close();
 
         // Add to stock (add to first warehouse, or create if not exists)
-        $warehouse_result = mysqli_query(
-            $conn, 
-            "SELECT warehouse_id 
-            FROM warehouse 
-            ORDER BY warehouse_id ASC LIMIT 1"
-            );
-
+        $warehouse_result = mysqli_query($conn, "SELECT warehouse_id FROM warehouse ORDER BY warehouse_id ASC LIMIT 1");
         $warehouse_row = mysqli_fetch_assoc($warehouse_result);
-
         $warehouse_id = $warehouse_row ? intval($warehouse_row['warehouse_id']) : null;
-
         if ($warehouse_id) {
-            // Check if stock row exists for this product+warehouse
-            $stock_result = mysqli_query(
-                $conn, 
-                "SELECT * FROM stock 
-                WHERE product_id = $product_id 
-                AND warehouse_id = $warehouse_id"
-                );
-                
+            $stock_result = mysqli_query($conn, "SELECT * FROM stock WHERE product_id = $product_id AND warehouse_id = $warehouse_id");
             if ($stock_row = mysqli_fetch_assoc($stock_result)) {
                 $new_qty = $stock_row['quantity'] + $quantity;
                 mysqli_query($conn, "UPDATE stock SET quantity = $new_qty WHERE stock_id = " . $stock_row['stock_id']);
@@ -55,104 +36,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['purchase_date'], $_PO
         }
         header("Location: purchases.php");
         exit();
+    } else {
+        $error = 'Please fill in all fields correctly.';
     }
 }
+
 // Fetch products
-$prod_result = mysqli_query(
-    $conn, 
-    "SELECT * FROM product 
-    ORDER BY product_name ASC"
-    );
-
-if (!$prod_result) { die('Product query error: ' . mysqli_error($conn)); }
 $products = [];
-
+$prod_result = mysqli_query($conn, "SELECT * FROM product ORDER BY product_name ASC");
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
 }
 // Fetch suppliers
-$sup_result = mysqli_query(
-    $conn, 
-    "SELECT * FROM supplier 
-    ORDER BY supplier_name ASC"
-    );
-
-if (!$sup_result) { die('Supplier query error: ' . mysqli_error($conn)); }
 $suppliers = [];
+$sup_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY supplier_name ASC");
 while ($row = mysqli_fetch_assoc($sup_result)) {
     $suppliers[] = $row;
 }
-// Fetch purchases
-$pur_result = mysqli_query(
-    $conn, 
-    "SELECT p.*, pr.product_name 
-    FROM purchase p JOIN product pr ON p.product_id = pr.product_id 
-    ORDER BY p.purchase_id DESC");
-
-if (!$pur_result) { die('Purchase query error: ' . mysqli_error($conn)); }
+// Fetch purchases (with product and supplier name via product table)
 $purchases = [];
+$pur_sql = "SELECT p.*, pr.product_name, s.supplier_name FROM purchase p ".
+    "JOIN product pr ON p.product_id = pr.product_id ".
+    "LEFT JOIN supplier s ON pr.supplier_id = s.supplier_id ".
+    "ORDER BY p.purchase_id DESC";
+$pur_result = mysqli_query($conn, $pur_sql);
+if ($pur_result === false) {
+    die('Purchase query error: ' . mysqli_error($conn) . "<br>SQL: " . htmlspecialchars($pur_sql));
+}
 while ($row = mysqli_fetch_assoc($pur_result)) {
     $purchases[] = $row;
 }
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Purchases</title>
-    <style>
-        body { background: #fff; color: #111; font-family: Arial, sans-serif; }
-        .container { max-width: 800px; margin: 2.5rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-        h2 { margin-top: 0; }
-        form { margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 1rem; }
-        input[type="text"], input[type="number"], input[type="date"], select { padding: 0.5rem; border: 1px solid #bbb; border-radius: 4px; }
-        button { padding: 0.5rem 1.2rem; border: none; background: #111; color: #fff; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.7rem; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f4f4f4; }
-        .top-bar { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchases</title>
+    <link rel="stylesheet" href="css/purchases.css">
+    <link rel="stylesheet" href="css/purchase_card.css">
 </head>
-<body style="margin:0; padding:0;">
-<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
-<div class="container" style="margin-left:220px;">
-    <div class="top-bar">
-        <h2>Purchases</h2>
-        <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button>Dashboard</button></a>
+<body>
+<div class="container">
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <div class="header">
+        <div>
+            <div class="header-title">Purchases</div>
+            <div class="header-sub">Manage your purchase records</div>
+        </div>
+        <button class="add-btn" onclick="document.getElementById('addPurchaseModal').style.display='block'">Add Purchase</button>
     </div>
+
     <?php if (!empty($error)): ?>
         <div style="color:red; margin-bottom:1rem; font-weight:bold;"> <?php echo $error; ?> </div>
     <?php endif; ?>
-    <form method="POST" action="purchases.php">
-        <input type="date" name="purchase_date" required>
-        <input type="number" name="quantity" placeholder="Quantity" required>
-        <input type="number" name="total_price" placeholder="Total Price" step="0.01" required>
-        <select name="product_id" required>
-            <option value="">Product</option>
-            <?php foreach ($products as $prod): ?>
-                <option value="<?php echo $prod['product_id']; ?>"><?php echo htmlspecialchars($prod['product_name']); ?></option>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <div class="purchase-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+            <?php foreach ($purchases as $purchase): ?>
+                <?php include __DIR__ . '/components/purchase_card.php'; ?>
             <?php endforeach; ?>
-        </select>
-        <select name="supplier_id" required>
-            <option value="">Supplier</option>
-            <?php foreach ($suppliers as $sup): ?>
-                <option value="<?php echo $sup['supplier_id']; ?>"><?php echo htmlspecialchars($sup['supplier_name']); ?></option>
-            <?php endforeach; ?>
-        </select>
-        <button type="submit">Add</button>
-    </form>
-    <table>
-        <tr><th>ID</th><th>Date</th><th>Quantity</th><th>Total Price</th><th>Product</th></tr>
-        <?php foreach ($purchases as $pur): ?>
-            <tr>
-                <td><?php echo $pur['purchase_id']; ?></td>
-                <td><?php echo $pur['purchase_date']; ?></td>
-                <td><?php echo $pur['quantity']; ?></td>
-                <td><?php echo $pur['total_price']; ?></td>
-                <td><?php echo htmlspecialchars($pur['product_name']); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+        </div>
+    </div>
+
+    <!-- Add Purchase Modal -->
+    <div id="addPurchaseModal" class="modal-bg">
+        <div class="modal-content modal-content-spacious">
+            <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Purchase</h2>
+            <form method="POST" action="purchases.php">
+                <div class="modal-fields modal-fields-spacious">
+                    <label class="modal-label">Date
+                        <input type="date" name="purchase_date" placeholder="Date" required>
+                    </label>
+                    <label class="modal-label">Quantity
+                        <input type="number" name="quantity" placeholder="Quantity" required>
+                    </label>
+                    <label class="modal-label">Total Price
+                        <input type="number" name="total_price" placeholder="Total Price" step="0.01" required>
+                    </label>
+                    <label class="modal-label">Product
+                        <select name="product_id" required>
+                            <option value="">Product</option>
+                            <?php foreach ($products as $prod): ?>
+                                <option value="<?= $prod['product_id'] ?>"><?= htmlspecialchars($prod['product_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <div class="modal-actions modal-actions-spacious">
+                        <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('addPurchaseModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn add-btn-spacious">Add</button>
+                    </div>
+                </div>
+            </form>
+            <button class="modal-close" onclick="document.getElementById('addPurchaseModal').style.display='none'">&times;</button>
+        </div>
+    </div>
 </div>
 </body>
 </html>

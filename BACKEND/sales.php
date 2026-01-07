@@ -72,106 +72,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sales_date'], $_POST[
     }
 }
 // Fetch customers
+// Fetch customers
 $cus_result = mysqli_query(
     $conn, 
-    "SELECT * FROM customer 
-    ORDER BY customer_name ASC"
-    );
-
+    "SELECT * FROM customer ORDER BY customer_name ASC"
+);
 if (!$cus_result) { die('Customer query error: ' . mysqli_error($conn)); }
 $customers = [];
 while ($row = mysqli_fetch_assoc($cus_result)) {
     $customers[] = $row;
 }
-
 // Fetch products
 $prod_result = mysqli_query(
     $conn, 
-    "SELECT * FROM product 
-    ORDER BY product_name ASC"
-    );
-
-if (!$prod_result) { die('Product query error: ' . mysqli_error($conn)); }
+    "SELECT * FROM product ORDER BY product_name ASC"
+);
 $products = [];
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
-}   
-
-// Fetch sales
+}
+// Fetch sales (with customer and product name)
 $sales_result = mysqli_query(
     $conn, 
-    "SELECT s.*, c.customer_name, p.product_name 
-    FROM sales s JOIN customer c ON s.customer_id = c.customer_id 
-    JOIN product p ON s.product_id = p.product_id 
-    ORDER BY s.sales_id DESC"
-    );
-
-if (!$sales_result) { die('Sales query error: ' . mysqli_error($conn)); }
+    "SELECT s.*, c.customer_name, p.product_name FROM sales s JOIN customer c ON s.customer_id = c.customer_id JOIN product p ON s.product_id = p.product_id ORDER BY s.sales_id DESC"
+);
 $sales = [];
 while ($row = mysqli_fetch_assoc($sales_result)) {
     $sales[] = $row;
 }
 
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Sales</title>
-    <style>
-        body { background: #fff; color: #111; font-family: Arial, sans-serif; }
-        .container { max-width: 900px; margin: 2.5rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-        h2 { margin-top: 0; }
-        form { margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto; gap: 1rem; }
-        input[type="text"], input[type="number"], input[type="date"], select { padding: 0.5rem; border: 1px solid #bbb; border-radius: 4px; }
-        button { padding: 0.5rem 1.2rem; border: none; background: #111; color: #fff; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.7rem; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f4f4f4; }
-        .top-bar { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales</title>
+    <link rel="stylesheet" href="css/sales.css">
+    <link rel="stylesheet" href="css/sales_card.css">
 </head>
-<body style="margin:0; padding:0;">
-<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
-<div class="container" style="margin-left:220px;">
-    <div class="top-bar">
-        <h2>Sales</h2>
-        <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button>Dashboard</button></a>
+<body>
+<div class="container">
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <div class="header">
+        <div>
+            <div class="header-title">Sales</div>
+            <div class="header-sub">Manage your sales records</div>
+        </div
+            <button class="add-btn" onclick="document.getElementById('addSalesModal').style.display='block'">Add Sale</button>
+        </div>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-content">
+            <div class="sales-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+                <?php foreach ($sales as $sale): ?>
+                    <?php include __DIR__ . '/components/sales_card.php'; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Add Sales Modal -->
+        <div id="addSalesModal" class="modal-bg">
+            <div class="modal-content modal-content-spacious">
+                <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Sale</h2>
+                <form method="POST" action="sales.php">
+                    <div class="modal-fields modal-fields-spacious">
+                        <label class="modal-label">Date
+                            <input type="text" name="sales_date" placeholder="Date" required>
+                        </label>
+                        <label class="modal-label">Quantity
+                            <input type="number" name="quantity" placeholder="Quantity" required>
+                        </label>
+                        <label class="modal-label">Total Price
+                            <input type="text" name="total_price" placeholder="Total Price" required>
+                        </label>
+                        <label class="modal-label">Customer
+                            <select name="customer_id" required>
+                                <option value="">Customer</option>
+                                <?php foreach ($customers as $cus): ?>
+                                    <option value="<?= $cus['customer_id'] ?>"><?= htmlspecialchars($cus['customer_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <label class="modal-label">Product
+                            <select name="product_id" required>
+                                <option value="">Product</option>
+                                <?php foreach ($products as $prod): ?>
+                                    <option value="<?= $prod['product_id'] ?>"><?= htmlspecialchars($prod['product_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <div class="modal-actions modal-actions-spacious">
+                            <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('addSalesModal').style.display='none'">Cancel</button>
+                            <button type="submit" class="add-btn add-btn-spacious">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <button class="modal-close" onclick="document.getElementById('addSalesModal').style.display='none'">&times;</button>
+            </div>
+        </div>
     </div>
-    <?php if (!empty($error)): ?>
-        <div style="color:red; margin-bottom:1rem; font-weight:bold;"> <?php echo $error; ?> </div>
-    <?php endif; ?>
-    <form method="POST" action="sales.php">
-        <input type="date" name="sales_date" required>
-        <input type="number" name="quantity" placeholder="Quantity" required>
-        <input type="number" name="total_price" placeholder="Total Price" step="0.01" required>
-        <select name="customer_id" required>
-            <option value="">Customer</option>
-            <?php foreach ($customers as $cus): ?>
-                <option value="<?php echo $cus['customer_id']; ?>"><?php echo htmlspecialchars($cus['customer_name']); ?></option>
-            <?php endforeach; ?>
-        </select>
-        <select name="product_id" required>
-            <option value="">Product</option>
-            <?php foreach ($products as $prod): ?>
-                <option value="<?php echo $prod['product_id']; ?>"><?php echo htmlspecialchars($prod['product_name']); ?></option>
-            <?php endforeach; ?>
-        </select>
-        <button type="submit">Add</button>
-    </form>
-    <table>
-        <tr><th>ID</th><th>Date</th><th>Quantity</th><th>Total Price</th><th>Customer</th><th>Product</th></tr>
-        <?php foreach ($sales as $sale): ?>
-            <tr>
-                <td><?php echo $sale['sales_id']; ?></td>
-                <td><?php echo $sale['sales_date']; ?></td>
-                <td><?php echo $sale['quantity']; ?></td>
-                <td><?php echo $sale['total_price']; ?></td>
-                <td><?php echo htmlspecialchars($sale['customer_name']); ?></td>
-                <td><?php echo htmlspecialchars($sale['product_name']); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</div>
-</body>
-</html>
+

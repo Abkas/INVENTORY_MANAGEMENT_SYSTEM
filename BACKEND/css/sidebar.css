@@ -127,6 +127,47 @@
     display: flex;
   }
 }
+/* Global container rules for sidebar layout */
+.container {
+  margin-left: 260px;
+}
+
+@media (max-width: 900px) {
+  body {
+    padding-top: 56px;
+  }
+  .container {
+    margin-left: auto;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    width: 220px;
+    min-height: 100vh;
+    top: 56px;
+    height: calc(100vh - 56px);
+  }
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+  .hamburger {
+    display: flex;
+  }
+  .sidebar-navbar-mobile {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 10px;
+    padding: 15px;
+  }
+  .modal-content {
+    margin: 20px;
+    max-width: calc(100% - 40px);
+  }
+}
+
 @media (min-width: 901px) {
   .sidebar-navbar-mobile {
     display: none !important;

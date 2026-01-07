@@ -39,54 +39,66 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Stock</title>
-    <style>
-        body { background: #fff; color: #111; font-family: Arial, sans-serif; }
-        .container { max-width: 900px; margin: 2.5rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-        h2 { margin-top: 0; }
-        form { margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; }
-        input[type="number"], select { padding: 0.5rem; border: 1px solid #bbb; border-radius: 4px; }
-        button { padding: 0.5rem 1.2rem; border: none; background: #111; color: #fff; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.7rem; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f4f4f4; }
-        .top-bar { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock</title>
+    <link rel="stylesheet" href="css/stock.css">
+    <link rel="stylesheet" href="css/stock_card.css">
 </head>
-<body style="margin:0; padding:0;">
-<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
-<div class="container" style="margin-left:220px;">
-    <div class="top-bar">
-        <h2>Stock</h2>
-        <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button>Dashboard</button></a>
+<body>
+<div class="container">
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <div class="header">
+        <div>
+            <div class="header-title">Stock</div>
+            <div class="header-sub">Manage your stock records</div>
+        </div>
+        <button class="add-btn" onclick="document.getElementById('addStockModal').style.display='block'">Add Stock</button>
     </div>
-    <form method="POST" action="stock.php">
-        <select name="product_id" required>
-            <option value="">Product</option>
-            <?php foreach ($products as $prod): ?>
-                <option value="<?php echo $prod['product_id']; ?>"><?php echo htmlspecialchars($prod['product_name']); ?></option>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <div class="stock-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+            <?php foreach ($stocks as $stock): ?>
+                <?php include __DIR__ . '/components/stock_card.php'; ?>
             <?php endforeach; ?>
-        </select>
-        <select name="warehouse_id" required>
-            <option value="">Warehouse</option>
-            <?php foreach ($warehouses as $wh): ?>
-                <option value="<?php echo $wh['warehouse_id']; ?>"><?php echo htmlspecialchars($wh['warehouse_name']); ?></option>
-            <?php endforeach; ?>
-        </select>
-        <input type="number" name="quantity" placeholder="Quantity" required>
-        <button type="submit">Add</button>
-    </form>
-    <table>
-        <tr><th>ID</th><th>Product</th><th>Warehouse</th><th>Quantity</th></tr>
-        <?php foreach ($stocks as $stock): ?>
-            <tr>
-                <td><?php echo $stock['stock_id']; ?></td>
-                <td><?php echo htmlspecialchars($stock['product_name']); ?></td>
-                <td><?php echo htmlspecialchars($stock['warehouse_name']); ?></td>
-                <td><?php echo $stock['quantity']; ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+        </div>
+    </div>
+
+    <!-- Add Stock Modal -->
+    <div id="addStockModal" class="modal-bg">
+        <div class="modal-content modal-content-spacious">
+            <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Stock</h2>
+            <form method="POST" action="stock.php">
+                <div class="modal-fields modal-fields-spacious">
+                    <label class="modal-label">Product
+                        <select name="product_id" required>
+                            <option value="">Product</option>
+                            <?php foreach ($products as $prod): ?>
+                                <option value="<?php echo $prod['product_id']; ?>"><?php echo htmlspecialchars($prod['product_name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <label class="modal-label">Warehouse
+                        <select name="warehouse_id" required>
+                            <option value="">Warehouse</option>
+                            <?php foreach ($warehouses as $wh): ?>
+                                <option value="<?php echo $wh['warehouse_id']; ?>"><?php echo htmlspecialchars($wh['warehouse_name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <label class="modal-label">Quantity
+                        <input type="number" name="quantity" placeholder="Quantity" required>
+                    </label>
+                    <div class="modal-actions modal-actions-spacious">
+                        <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('addStockModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn add-btn-spacious">Add</button>
+                    </div>
+                </div>
+            </form>
+            <button class="modal-close" onclick="document.getElementById('addStockModal').style.display='none'">&times;</button>
+        </div>
+    </div>
 </div>
 </body>
 </html>

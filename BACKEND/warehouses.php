@@ -24,42 +24,53 @@ while ($row = mysqli_fetch_assoc($result)) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Warehouses</title>
-    <style>
-        body { background: #fff; color: #111; font-family: Arial, sans-serif; }
-        .container { max-width: 700px; margin: 2.5rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-        h2 { margin-top: 0; }
-        form { margin-bottom: 2rem; display: grid; grid-template-columns: 2fr 2fr auto; gap: 1rem; }
-        input[type="text"] { padding: 0.5rem; border: 1px solid #bbb; border-radius: 4px; }
-        button { padding: 0.5rem 1.2rem; border: none; background: #111; color: #fff; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.7rem; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f4f4f4; }
-        .top-bar { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouses</title>
+    <link rel="stylesheet" href="css/warehouse.css">
+    <link rel="stylesheet" href="css/warehouse_card.css">
 </head>
-<body style="margin:0; padding:0;">
-<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
-<div class="container" style="margin-left:220px;">
-    <div class="top-bar">
-        <h2>Warehouses</h2>
-        <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button>Dashboard</button></a>
+<body>
+<div class="container">
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <div class="header">
+        <div>
+            <div class="header-title">Warehouses</div>
+            <div class="header-sub">Manage your warehouses</div>
+        </div>
+        <button class="add-btn" onclick="document.getElementById('addWarehouseModal').style.display='block'">Add Warehouse</button>
     </div>
-    <form method="POST" action="warehouses.php">
-        <input type="text" name="warehouse_name" placeholder="Warehouse name" required>
-        <input type="text" name="location" placeholder="Location">
-        <button type="submit">Add</button>
-    </form>
-    <table>
-        <tr><th>ID</th><th>Name</th><th>Location</th></tr>
-        <?php foreach ($warehouses as $wh): ?>
-            <tr>
-                <td><?php echo $wh['warehouse_id']; ?></td>
-                <td><?php echo htmlspecialchars($wh['warehouse_name']); ?></td>
-                <td><?php echo htmlspecialchars($wh['location']); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <div class="warehouse-card-grid">
+            <?php foreach ($warehouses as $warehouse): ?>
+                <?php include __DIR__ . '/components/warehouse_card.php'; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <!-- Add Warehouse Modal -->
+    <div id="addWarehouseModal" class="modal-bg">
+        <div class="modal-content">
+            <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Warehouse</h2>
+            <form method="POST" action="warehouses.php">
+                <div class="modal-fields">
+                    <label class="modal-label">Warehouse Name
+                        <input type="text" name="warehouse_name" placeholder="Warehouse name" required>
+                    </label>
+                    <label class="modal-label">Location
+                        <input type="text" name="location" placeholder="Location">
+                    </label>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-cancel" onclick="document.getElementById('addWarehouseModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn">Add</button>
+                    </div>
+                </div>
+            </form>
+            <button class="modal-close" onclick="document.getElementById('addWarehouseModal').style.display='none'">&times;</button>
+        </div>
+    </div>
 </div>
 </body>
 </html>
