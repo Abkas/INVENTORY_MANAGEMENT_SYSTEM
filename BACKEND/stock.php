@@ -53,8 +53,9 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
         .top-bar { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem; }
     </style>
 </head>
-<body>
-<div class="container">
+<body style="margin:0; padding:0;">
+<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
+<div class="container" style="margin-left:220px;">
     <div class="top-bar">
         <h2>Stock</h2>
         <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button>Dashboard</button></a>

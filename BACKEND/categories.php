@@ -38,8 +38,9 @@ while ($row = mysqli_fetch_assoc($result)) {
         th { background: #f4f4f4; }
     </style>
 </head>
-<body>
-<div class="container">
+<body style="margin:0; padding:0;">
+<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
+<div class="container" style="margin-left:220px;">
     <div style="display:flex;justify-content:space-between;align-items:center;">
         <h2>Categories</h2>
         <a href="/INVENTORY_SYSTEM/BACKEND/index.php"><button style="padding:0.5rem 1.2rem;">Dashboard</button></a>

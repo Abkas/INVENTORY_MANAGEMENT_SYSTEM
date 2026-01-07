@@ -88,8 +88,11 @@ if (!isset($_SESSION['user'])) {
         }
     </style>
 </head>
-<body>
-<div class="container">
+<body style="margin:0; padding:0;">
+
+<?php include __DIR__ . '/comopnents/sidebar.php'; ?>
+
+<div class="container" style="margin-left:220px;">
     <div class="dashboard-box">
         <div class="dashboard-header">
             <h2>Inventory Dashboard</h2>
