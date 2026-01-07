@@ -1,0 +1,66 @@
+/* products.css - Styles for the product management page and product cards */
+body { background: #f8fafc; color: #18181b; font-family: Arial, sans-serif; margin:0; padding:0; }
+.container { max-width: 900px; margin: 2.5rem auto; padding: 2.5rem 2rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; box-shadow: 0 2px 8px #0001; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+.header-title { font-size: 2rem; font-weight: bold; margin: 0; }
+.header-sub { color: #555; font-size: 1rem; margin-top: 0.3rem; }
+.add-btn { background: #6366f1; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+.add-btn:hover { background: #4f46e5; }
+
+
+.product-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 1100px) {
+  .container { max-width: 100vw; padding: 1rem; }
+}
+@media (max-width: 700px) {
+  .container { margin-left: 0 !important; padding: 0.5rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .product-card-grid { gap: 1rem; }
+}
+
+/* Modal styles (for add product) */
+.modal-bg {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.25);
+}
+.modal-bg[style*='display:block'] { display: block; }
+.modal-content, .modal-content-spacious {
+  background: #fff;
+  max-width: 500px;
+  margin: 6vh auto;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px #0002;
+  position: relative;
+}
+.modal-content-spacious { max-width: 540px; padding: 2.7rem 2.7rem 2.2rem 2.7rem; }
+.modal-fields, .modal-fields-spacious { display: flex; flex-direction: column; gap: 1.5rem; }
+.modal-fields-spacious { gap: 2rem; }
+.modal-label { font-size: 1.08rem; color: #23272f; font-weight: 500; display: flex; flex-direction: column; gap: 0.5rem; }
+.modal-label input, .modal-label select {
+  padding: 0.85rem 0.9rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 1.08rem;
+  background: #f8fafc;
+  transition: border 0.2s;
+}
+.modal-label input:focus, .modal-label select:focus {
+  border: 1.5px solid #6366f1;
+  outline: none;
+}
+.modal-actions, .modal-actions-spacious { display: flex; gap: 1.2rem; justify-content: flex-end; margin-top: 0.5rem; }
+.modal-cancel, .modal-cancel-spacious { background: #f3f4f6; color: #333; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-size: 1rem; }
+.modal-cancel-spacious { font-size: 1.08rem; padding: 0.7rem 1.7rem; }
+.add-btn, .add-btn-spacious { background: #6366f1; color: #fff; border: none; border-radius: 6px; padding: 0.7rem 1.7rem; font-size: 1.08rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.add-btn-spacious:hover { background: #4f46e5; }
+.modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 1.7rem; color: #888; cursor: pointer; }

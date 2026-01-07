@@ -1,0 +1,70 @@
+/* product_card.css - Styles for the product card component only */
+.product-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+.product-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 1.5rem 1.3rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+}
+.product-card:hover {
+  box-shadow: 0 6px 32px #6366f133;
+  transform: translateY(-2px) scale(1.012);
+}
+.product-card-header {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #23272f;
+  margin-bottom: 0.2rem;
+}
+.product-card-title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.product-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.product-card-info {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+}
+.product-card-label {
+  color: #6366f1;
+  font-weight: 500;
+}
+.product-card-actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+.product-card .action-btn {
+  border: none;
+  background: #f3f4f6;
+  color: #444;
+  border-radius: 5px;
+  padding: 0.45rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.product-card .action-btn:hover {
+  background: #6366f1;
+  color: #fff;
+}
+@media (max-width: 700px) {
+  .product-card-grid { gap: 1rem; }
+}
