@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
+    header("Location: /INVENTORY_SYSTEM/BACKEND/user/login.php");
     exit();
 }
 require_once __DIR__ . '/db/connect.php';

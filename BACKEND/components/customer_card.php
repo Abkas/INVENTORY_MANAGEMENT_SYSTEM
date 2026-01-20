@@ -17,8 +17,7 @@
     </div>
   </div>
   <div class="customer-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
+    <button class="action-btn" onclick="openEditModal(<?= $customer['customer_id'] ?>, '<?= addslashes($customer['customer_name']) ?>', '<?= addslashes($customer['customer_email']) ?>', '<?= addslashes($customer['customer_phone']) ?>')">Edit</button>
+    <button class="action-btn delete-btn" style="background:#fee2e2;color:#991b1b;" onclick="confirmDelete(<?= $customer['customer_id'] ?>)">Delete</button>
   </div>
 </div>

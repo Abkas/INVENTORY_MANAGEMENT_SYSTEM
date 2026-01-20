@@ -23,8 +23,7 @@
     </div>
   </div>
   <div class="product-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
+    <button class="action-btn" onclick="openEditModal(<?= $product['product_id'] ?>, '<?= addslashes($product['product_name']) ?>', '<?= $product['unit_price'] ?>', '<?= $product['category_id'] ?>', '<?= $product['supplier_id'] ?>')">Edit</button>
+    <button class="action-btn delete-btn" style="background:#fee2e2;color:#991b1b;" onclick="confirmDelete(<?= $product['product_id'] ?>)">Delete</button>
   </div>
 </div>

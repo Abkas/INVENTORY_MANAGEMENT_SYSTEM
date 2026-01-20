@@ -19,6 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $result = mysqli_query($conn, "SELECT * FROM user WHERE username='$username'");
+    
+    if (!$result) {
+        die("Query failed: " . mysqli_error($conn));
+    }
+
     $user = mysqli_fetch_assoc($result);
 
     if ($user && verifyPassword($password, $user['password'])) {

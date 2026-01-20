@@ -1,21 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
+    header("Location: /INVENTORY_SYSTEM/BACKEND/user/login.php");
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
-// Handle add customer
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['customer_name'])) {
-    $customer_name = trim($_POST['customer_name']);
-    $customer_email = trim($_POST['customer_email']);
-    $customer_phone = trim($_POST['customer_phone']);
-    if ($customer_name !== '') {
-        mysqli_query($conn, "INSERT INTO customer (customer_name, customer_email, customer_phone) VALUES ('$customer_name', '$customer_email', '$customer_phone')");
-        header("Location: customers.php");
-        exit();
-    }
-}
+
+// Fetch customers
 $result = mysqli_query($conn, "SELECT * FROM customer ORDER BY customer_id DESC");
 $customers = [];
 while ($row = mysqli_fetch_assoc($result)) {
@@ -30,6 +21,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <title>Customers</title>
     <link rel="stylesheet" href="css/customers.css">
     <link rel="stylesheet" href="css/customer_card.css">
+    <link rel="stylesheet" href="css/categories.css"> <!-- Reusing modal styles -->
 </head>
 <body>
 <div class="container">
@@ -42,6 +34,10 @@ while ($row = mysqli_fetch_assoc($result)) {
         <button class="add-btn" onclick="document.getElementById('addCustomerModal').style.display='block'">Add Customer</button>
     </div>
 
+    <?php if (isset($_SESSION['msg'])): ?>
+        <div style="background:#dcfce7;color:#166534;padding:12px;border-radius:8px;margin-bottom:20px;"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
+    <?php endif; ?>
+
     <!-- Main Content Wrapper -->
     <div class="main-content">
         <div class="customer-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
@@ -52,16 +48,16 @@ while ($row = mysqli_fetch_assoc($result)) {
     </div>
 
     <!-- Add Customer Modal -->
-    <div id="addCustomerModal" class="modal-bg">
+    <div id="addCustomerModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content-spacious">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Customer</h2>
-            <form method="POST" action="customers.php">
+            <form method="POST" action="customer/add.php">
                 <div class="modal-fields modal-fields-spacious">
                     <label class="modal-label">Customer Name
                         <input type="text" name="customer_name" placeholder="Enter customer name" required>
                     </label>
                     <label class="modal-label">Email
-                        <input type="text" name="customer_email" placeholder="Enter email">
+                        <input type="email" name="customer_email" placeholder="Enter email">
                     </label>
                     <label class="modal-label">Phone
                         <input type="text" name="customer_phone" placeholder="Enter phone">
@@ -75,6 +71,47 @@ while ($row = mysqli_fetch_assoc($result)) {
             <button class="modal-close" onclick="document.getElementById('addCustomerModal').style.display='none'">&times;</button>
         </div>
     </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="editCustomerModal" class="modal-bg" style="display:none;">
+        <div class="modal-content modal-content-spacious">
+            <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Customer</h2>
+            <form method="POST" action="customer/edit.php">
+                <input type="hidden" name="customer_id" id="edit_customer_id">
+                <div class="modal-fields modal-fields-spacious">
+                    <label class="modal-label">Customer Name
+                        <input type="text" name="customer_name" id="edit_customer_name" required>
+                    </label>
+                    <label class="modal-label">Email
+                        <input type="email" name="customer_email" id="edit_customer_email">
+                    </label>
+                    <label class="modal-label">Phone
+                        <input type="text" name="customer_phone" id="edit_customer_phone">
+                    </label>
+                    <div class="modal-actions modal-actions-spacious">
+                        <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('editCustomerModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn add-btn-spacious">Update</button>
+                    </div>
+                </div>
+            </form>
+            <button class="modal-close" onclick="document.getElementById('editCustomerModal').style.display='none'">&times;</button>
+        </div>
+    </div>
+
+    <script>
+    function openEditModal(id, name, email, phone) {
+        document.getElementById('edit_customer_id').value = id;
+        document.getElementById('edit_customer_name').value = name;
+        document.getElementById('edit_customer_email').value = email;
+        document.getElementById('edit_customer_phone').value = phone;
+        document.getElementById('editCustomerModal').style.display = 'block';
+    }
+    function confirmDelete(id) {
+        if (confirm('Are you sure you want to delete this customer?')) {
+            window.location.href = 'customer/delete.php?id=' + id;
+        }
+    }
+    </script>
 </div>
 </body>
 </html>

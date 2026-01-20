@@ -17,8 +17,7 @@
     </div>
   </div>
   <div class="supplier-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
+    <button class="action-btn" onclick="openEditModal(<?= $supplier['supplier_id'] ?>, '<?= addslashes($supplier['supplier_name']) ?>', '<?= addslashes($supplier['supplier_email']) ?>', '<?= addslashes($supplier['supplier_phone']) ?>')">Edit</button>
+    <button class="action-btn delete-btn" style="background:#fee2e2;color:#991b1b;" onclick="confirmDelete(<?= $supplier['supplier_id'] ?>)">Delete</button>
   </div>
 </div>

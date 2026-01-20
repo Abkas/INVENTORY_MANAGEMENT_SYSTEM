@@ -1,37 +1,69 @@
-/* Warehouse Card Styles */
+/* Unified Warehouse Card Styles */
 .warehouse-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    padding: 1.2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    transition: box-shadow 0.2s;
-    border: 1px solid #e3e6ee;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
 }
 .warehouse-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
 }
 .warehouse-card-header {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2a2d34;
-    margin-bottom: 0.2rem;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #222;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
 }
 .warehouse-card-title {
     letter-spacing: -0.5px;
 }
 .warehouse-card-body {
-    font-size: 1rem;
-    color: #444;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+}
+.warehouse-card-info {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: #555;
+}
+.warehouse-card-label {
+    color: #007bff;
+    font-weight: 600;
+    min-width: 80px;
 }
 .warehouse-card-footer {
     font-size: 0.92rem;
     color: #888;
     margin-top: 0.3rem;
     text-align: right;
+}
+.warehouse-card-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+.action-btn {
+    background: white;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.action-btn:hover {
+    background: #007bff;
+    color: white;
 }

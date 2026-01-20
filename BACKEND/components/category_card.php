@@ -7,8 +7,7 @@
     <span class="category-card-title"><?= htmlspecialchars($category['category_name']) ?></span>
   </div>
   <div class="category-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
+    <button class="action-btn" onclick="openEditModal(<?= $category['category_id'] ?>, '<?= addslashes($category['category_name']) ?>')">Edit</button>
+    <button class="action-btn delete-btn" style="background:#fee2e2;color:#991b1b;" onclick="confirmDelete(<?= $category['category_id'] ?>)">Delete</button>
   </div>
 </div>

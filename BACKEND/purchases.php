@@ -1,46 +1,17 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
+    header("Location: /INVENTORY_SYSTEM/BACKEND/user/login.php");
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
-$error = '';
 
-// Handle add purchase and update stock
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $purchase_date = trim($_POST['purchase_date'] ?? '');
-    $quantity = intval($_POST['quantity'] ?? 0);
-    $total_price = trim($_POST['total_price'] ?? '');
-    $product_id = intval($_POST['product_id'] ?? 0);
-    $user_id = $_SESSION['user_id'] ?? 1;
-
-    if ($purchase_date && $quantity > 0 && $total_price !== '' && $product_id > 0) {
-        $stmt = $conn->prepare("INSERT INTO purchase (purchase_date, quantity, total_price, product_id, user_id) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param('sidii', $purchase_date, $quantity, $total_price, $product_id, $user_id);
-        $stmt->execute();
-        $stmt->close();
-
-        // Add to stock (add to first warehouse, or create if not exists)
-        $warehouse_result = mysqli_query($conn, "SELECT warehouse_id FROM warehouse ORDER BY warehouse_id ASC LIMIT 1");
-        $warehouse_row = mysqli_fetch_assoc($warehouse_result);
-        $warehouse_id = $warehouse_row ? intval($warehouse_row['warehouse_id']) : null;
-        if ($warehouse_id) {
-            $stock_result = mysqli_query($conn, "SELECT * FROM stock WHERE product_id = $product_id AND warehouse_id = $warehouse_id");
-            if ($stock_row = mysqli_fetch_assoc($stock_result)) {
-                $new_qty = $stock_row['quantity'] + $quantity;
-                mysqli_query($conn, "UPDATE stock SET quantity = $new_qty WHERE stock_id = " . $stock_row['stock_id']);
-            } else {
-                mysqli_query($conn, "INSERT INTO stock (product_id, warehouse_id, quantity, user_id) VALUES ($product_id, $warehouse_id, $quantity, $user_id)");
-            }
-        }
-        header("Location: purchases.php");
-        exit();
-    } else {
-        $error = 'Please fill in all fields correctly.';
-    }
+// Fetch categories
+$categories = [];
+$cat_result = mysqli_query($conn, "SELECT * FROM category ORDER BY category_name ASC");
+while ($row = mysqli_fetch_assoc($cat_result)) {
+    $categories[] = $row;
 }
-
 // Fetch products
 $products = [];
 $prod_result = mysqli_query($conn, "SELECT * FROM product ORDER BY product_name ASC");
@@ -104,28 +75,72 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
     <div id="addPurchaseModal" class="modal-bg">
         <div class="modal-content modal-content-spacious">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Purchase</h2>
-            <form method="POST" action="purchases.php">
+            <form method="POST" action="purchase/add.php">
                 <div class="modal-fields modal-fields-spacious">
                     <label class="modal-label">Date
-                        <input type="date" name="purchase_date" placeholder="Date" required>
+                        <input type="date" name="purchase_date" value="<?= date('Y-m-d') ?>" required>
                     </label>
-                    <label class="modal-label">Quantity
-                        <input type="number" name="quantity" placeholder="Quantity" required>
+                    
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+                        <label class="modal-label" style="flex-direction: row; gap: 10px; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="is_new_product" name="is_new_product" onchange="toggleProductMode()">
+                            <strong>Is this a NEW product?</strong>
+                        </label>
+                    </div>
+
+                    <!-- Existing Product Selection -->
+                    <div id="existing_product_div">
+                        <label class="modal-label">Select Product
+                            <select name="product_id" id="product_select">
+                                <option value="">-- Select Product --</option>
+                                <?php foreach ($products as $prod): ?>
+                                    <option value="<?= $prod['product_id'] ?>"><?= htmlspecialchars($prod['product_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <!-- New Product Creation Fields -->
+                    <div id="new_product_div" style="display: none;">
+                        <label class="modal-label">New Product Name
+                            <input type="text" name="new_product_name" placeholder="Enter product name">
+                        </label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <label class="modal-label">Category
+                                <select name="category_id">
+                                    <option value="">-- Category --</option>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['category_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
+                            <label class="modal-label">Supplier
+                                <select name="supplier_id">
+                                    <option value="">-- Supplier --</option>
+                                    <?php foreach ($suppliers as $sup): ?>
+                                        <option value="<?= $sup['supplier_id'] ?>"><?= htmlspecialchars($sup['supplier_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label class="modal-label">Quantity
+                            <input type="number" name="quantity" placeholder="0" min="1" required>
+                        </label>
+                        <label class="modal-label">Unit Price (रु)
+                            <input type="number" name="unit_price" id="unit_price" placeholder="0.00" step="0.01" oninput="calculateTotal()" required>
+                        </label>
+                    </div>
+                    
+                    <label class="modal-label">Total Amount (रु)
+                        <input type="number" name="total_price" id="total_price_input" placeholder="0.00" step="0.01" readonly required>
                     </label>
-                    <label class="modal-label">Total Price
-                        <input type="number" name="total_price" placeholder="Total Price" step="0.01" required>
-                    </label>
-                    <label class="modal-label">Product
-                        <select name="product_id" required>
-                            <option value="">Product</option>
-                            <?php foreach ($products as $prod): ?>
-                                <option value="<?= $prod['product_id'] ?>"><?= htmlspecialchars($prod['product_name']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </label>
+
                     <div class="modal-actions modal-actions-spacious">
                         <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('addPurchaseModal').style.display='none'">Cancel</button>
-                        <button type="submit" class="add-btn add-btn-spacious">Add</button>
+                        <button type="submit" class="add-btn add-btn-spacious">Confirm Purchase</button>
                     </div>
                 </div>
             </form>
@@ -133,5 +148,31 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
         </div>
     </div>
 </div>
+
+<script>
+    function toggleProductMode() {
+        const isNew = document.getElementById('is_new_product').checked;
+        document.getElementById('existing_product_div').style.display = isNew ? 'none' : 'block';
+        document.getElementById('new_product_div').style.display = isNew ? 'block' : 'none';
+        
+        // Toggle required attributes
+        const productSelect = document.getElementById('product_select');
+        const newProdName = document.querySelector('input[name="new_product_name"]');
+        
+        if (isNew) {
+            productSelect.removeAttribute('required');
+            newProdName.setAttribute('required', 'required');
+        } else {
+            productSelect.setAttribute('required', 'required');
+            newProdName.removeAttribute('required');
+        }
+    }
+
+    function calculateTotal() {
+        const qty = document.querySelector('input[name="quantity"]').value || 0;
+        const price = document.getElementById('unit_price').value || 0;
+        document.getElementById('total_price_input').value = (qty * price).toFixed(2);
+    }
+</script>
 </body>
 </html>

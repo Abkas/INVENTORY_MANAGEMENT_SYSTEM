@@ -25,6 +25,7 @@
     <a href="/INVENTORY_SYSTEM/BACKEND/purchases.php" class="sidebar-link">🧾 Purchases</a>
     <a href="/INVENTORY_SYSTEM/BACKEND/stock.php" class="sidebar-link">📊 Stock</a>
     <a href="/INVENTORY_SYSTEM/BACKEND/warehouses.php" class="sidebar-link">🏢 Warehouses</a>
+    <a href="/INVENTORY_SYSTEM/BACKEND/reports.php" class="sidebar-link">📈 Reports</a>
   </nav>
 </aside>
 <script>

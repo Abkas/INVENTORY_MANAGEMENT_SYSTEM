@@ -1,20 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: /INVENTORY_SYSTEM/FRONTEND/pages/login.html");
+    header("Location: /INVENTORY_SYSTEM/BACKEND/user/login.php");
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Handle add category
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category_name'])) {
-    $category_name = trim($_POST['category_name']);
-    if ($category_name !== '') {
-        mysqli_query($conn, "INSERT INTO category (category_name) VALUES ('$category_name')");
-        header("Location: categories.php");
-        exit();
-    }
-}
 // Fetch categories
 $result = mysqli_query($conn, "SELECT * FROM category ORDER BY category_id DESC");
 $categories = [];
@@ -43,6 +34,11 @@ while ($row = mysqli_fetch_assoc($result)) {
         <button class="add-btn" onclick="document.getElementById('addCategoryModal').style.display='block'">Add Category</button>
     </div>
 
+    <!-- Feedback Messages -->
+    <?php if (isset($_SESSION['msg'])): ?>
+        <div style="background:#dcfce7;color:#166534;padding:12px;border-radius:8px;margin-bottom:20px;"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
+    <?php endif; ?>
+
     <!-- Main Content Wrapper -->
     <div class="main-content">
         <div class="category-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
@@ -53,10 +49,10 @@ while ($row = mysqli_fetch_assoc($result)) {
     </div>
 
     <!-- Add Category Modal -->
-    <div id="addCategoryModal" class="modal-bg">
+    <div id="addCategoryModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content-spacious">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Category</h2>
-            <form method="POST" action="categories.php">
+            <form method="POST" action="category/add.php">
                 <div class="modal-fields modal-fields-spacious">
                     <label class="modal-label">Category Name
                         <input type="text" name="category_name" placeholder="Enter category name" required>
@@ -70,6 +66,39 @@ while ($row = mysqli_fetch_assoc($result)) {
             <button class="modal-close" onclick="document.getElementById('addCategoryModal').style.display='none'">&times;</button>
         </div>
     </div>
+
+    <!-- Edit Category Modal -->
+    <div id="editCategoryModal" class="modal-bg" style="display:none;">
+        <div class="modal-content modal-content-spacious">
+            <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Category</h2>
+            <form method="POST" action="category/edit.php">
+                <input type="hidden" name="category_id" id="edit_category_id">
+                <div class="modal-fields modal-fields-spacious">
+                    <label class="modal-label">Category Name
+                        <input type="text" name="category_name" id="edit_category_name" placeholder="Enter category name" required>
+                    </label>
+                    <div class="modal-actions modal-actions-spacious">
+                        <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('editCategoryModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn add-btn-spacious">Update</button>
+                    </div>
+                </div>
+            </form>
+            <button class="modal-close" onclick="document.getElementById('editCategoryModal').style.display='none'">&times;</button>
+        </div>
+    </div>
+
+    <script>
+    function openEditModal(id, name) {
+        document.getElementById('edit_category_id').value = id;
+        document.getElementById('edit_category_name').value = name;
+        document.getElementById('editCategoryModal').style.display = 'block';
+    }
+    function confirmDelete(id) {
+        if (confirm('Are you sure you want to delete this category?')) {
+            window.location.href = 'category/delete.php?id=' + id;
+        }
+    }
+    </script>
 </div>
 </body>
 </html>
