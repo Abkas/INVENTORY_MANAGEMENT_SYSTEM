@@ -58,317 +58,136 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Dashboard | Inventory Manager</title>
-    <link rel="stylesheet" href="css/categories.css">
+    <title>Executive Dashboard | Inventory Manager</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --secondary: #64748b;
-        }
-
-        .main-content {
-            padding: 2.5rem;
-            background: #f8fafc;
-            min-height: 100vh;
-        }
-
-        .welcome-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .welcome-text h1 {
-            font-size: 1.875rem;
-            font-weight: 800;
-            color: #1e293b;
-            margin: 0;
-            letter-spacing: -0.025em;
-        }
-
-        .welcome-text p {
-            color: #64748b;
-            margin-top: 0.25rem;
-            font-size: 1.1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.75rem;
-            border-radius: 1.25rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-        }
-
-        .stat-card .label {
-            color: #64748b;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-card .value {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 0.75rem 0;
-            letter-spacing: -0.04em;
-        }
-
-        .stat-card .growth {
-            font-size: 0.875rem;
-            font-weight: 600;
-            padding: 0.25rem 0.6rem;
-            border-radius: 2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .growth.up { background: #dcfce7; color: #15803d; }
-        .growth.down { background: #fee2e2; color: #b91c1c; }
-
-        /* Chart Layout */
-        .analytics-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .chart-panel {
-            background: white;
-            border-radius: 1.25rem;
-            padding: 1.5rem;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px; /* Fixed height to prevent resizing loop */
-        }
-
-        .chart-panel h3 {
-            margin: 0 0 1.5rem 0;
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Quick Actions Container */
-        .quick-actions {
-            background: #1e293b;
-            padding: 1.5rem;
-            border-radius: 1.25rem;
-            margin-bottom: 2.5rem;
-            color: white;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 1.25rem;
-            margin-top: 1rem;
-        }
-
-        .action-btn {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .action-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
-        .dashboard-row {
-            display: grid;
-            grid-template-columns: 2fr 1.2fr;
-            gap: 2rem;
-        }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 1rem; color: #64748b; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; }
-        td { padding: 1.25rem 1rem; font-size: 0.95rem; border-bottom: 1px solid #f8fafc; }
-
-        .alert-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.25rem;
-            background: #fef2f2;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #fee2e2;
-        }
-
-        @media (max-width: 1024px) {
-            .analytics-row, .dashboard-row { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
-<body style="margin:0; padding:0;">
+<body>
 
-<?php include __DIR__ . '/components/sidebar.php'; ?>
+<div class="container">
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
 
-<main class="main-content" style="margin-left:220px;">
-    <!-- Welcome -->
-    <div class="welcome-section">
-        <div class="welcome-text">
-            <h1><?= $greeting ?>, <?= htmlspecialchars($_SESSION['user']) ?>!</h1>
-            <p>Your business pulse at a glance.</p>
-        </div>
-        <div style="display:flex; gap:10px;">
+    <main class="main-content">
+        <!-- 1. Hero / Welcome -->
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h1><?= $greeting ?>, <?= htmlspecialchars($_SESSION['user']) ?></h1>
+                <p>Overview of your business performance.</p>
+            </div>
             <div style="text-align:right;">
-                <div style="font-weight:700; color:#1e293b;"><?= date('l, M d') ?></div>
-                <div style="font-size:0.85rem; color:#64748b;">System status: <span style="color:var(--success); font-weight:700;">● Live</span></div>
+                <div style="font-weight:700; color:var(--text-main); font-size: 1rem;"><?= date('l, F j') ?></div>
+                <div style="font-size:0.8rem; color:var(--text-sub);">System Status: <span style="color:var(--success); font-weight:700;">● Online</span></div>
             </div>
         </div>
-    </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="label">Today's Revenue</div>
-            <div class="value">रु <?= number_format($today_val, 2) ?></div>
-            <div class="growth <?= ($diff >= 0) ? 'up' : 'down' ?>">
-                <?= ($diff >= 0) ? '▲' : '▼' ?> <?= number_format(abs($perc), 1) ?>%
-                <span style="opacity:0.7; font-weight:400; font-size:0.75rem;">vs yesterday</span>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="label">Total Orders</div>
-            <div class="value"><?= $sales_stats['total_count'] ?? 0 ?></div>
-            <div class="label" style="font-size:0.7rem;">Cumulative record</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">Inventory Items</div>
-            <div class="value"><?= $product_count['total'] ?? 0 ?></div>
-            <div class="label" style="font-size:0.7rem;">Active SKU count</div>
-        </div>
-        <div class="stat-card" style="border-top: 5px solid var(--danger);">
-            <div class="label" style="color:var(--danger);">Urgent Alerts</div>
-            <div class="value" style="color:var(--danger);"><?= $low_stock_count['total'] ?? 0 ?></div>
-            <div class="label" style="font-size:0.7rem;">Low stock items</div>
-        </div>
-    </div>
-
-    <!-- Analytics Charts -->
-    <div class="analytics-row">
-        <div class="chart-panel">
-            <h3>📈 Sales Performance (Last 7 Days)</h3>
-            <div class="chart-container">
-                <canvas id="salesChart"></canvas>
-            </div>
-        </div>
-        <div class="chart-panel">
-            <h3>📊 Category Distribution</h3>
-            <div class="chart-container">
-                <canvas id="categoryChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-             <h3 style="margin:0; font-weight:700;">Shortcuts</h3>
-             <span style="font-size:0.8rem; opacity:0.6;">Quick management tools</span>
-        </div>
-        <div class="action-btns">
-            <a href="sales.php" class="action-btn">
-                <span>⚡</span> Recorded Sale
-            </a>
-            <a href="purchases.php" class="action-btn">
-                <span>📦</span> Restock Items
-            </a>
-            <a href="reports.php" class="action-btn">
-                <span>📊</span> Full Analytics
-            </a>
-        </div>
-    </div>
-
-    <div class="dashboard-row">
-        <!-- Activity Log -->
-        <div class="chart-panel">
-            <h3>🕒 Recent Transactions <a href="sales.php" style="font-size:0.8rem; font-weight:400; color:var(--primary); text-decoration:none;">View All</a></h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Transaction Date</th>
-                        <th>Entity</th>
-                        <th>Product</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while($sale = mysqli_fetch_assoc($recent_sales)): ?>
-                    <tr>
-                        <td style="color:#64748b;"><?= date('M d, H:i', strtotime($sale['sales_date'])) ?></td>
-                        <td><strong><?= htmlspecialchars($sale['customer_name']) ?></strong></td>
-                        <td><?= htmlspecialchars($sale['product_name']) ?></td>
-                        <td style="color:var(--success); font-weight:700;">रु <?= number_format($sale['total_price'], 2) ?></td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Stock Warnings -->
-        <div class="chart-panel">
-            <h3>⚠️ Inventory Warnings</h3>
-            <?php while($item = mysqli_fetch_assoc($low_stock_products)): ?>
-            <div class="alert-item">
+        <!-- 2. High-Level Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
                 <div>
-                    <strong style="display:block; color:#991b1b;"><?= htmlspecialchars($item['product_name']) ?></strong>
-                    <span style="font-size:0.85rem; color:#b91c1c;">Stock: <?= $item['total_qty'] ?> left</span>
+                    <div class="label">Daily Revenue</div>
+                    <div class="value">रु <?= number_format($today_val, 2) ?></div>
                 </div>
-                <a href="purchases.php" style="color:white; background:var(--danger); padding:0.5rem 0.75rem; border-radius:0.5rem; text-decoration:none; font-size:0.75rem; font-weight:700;">RESTOCK</a>
+                <div class="growth <?= ($diff >= 0) ? 'up' : 'down' ?>">
+                    <?= ($diff >= 0) ? '▲' : '▼' ?> <?= number_format(abs($perc), 1) ?>%
+                </div>
             </div>
-            <?php endwhile; ?>
-            <?php if(mysqli_num_rows($low_stock_products) == 0): ?>
-            <div style="text-align:center; padding: 3rem 1rem;">
-                <span style="font-size:3rem; display:block; margin-bottom:1rem;">✅</span>
-                <p style="color:#64748b; font-weight:600;">Inventory level is optimal.</p>
+            <div class="stat-card">
+                <div>
+                    <div class="label">Total Orders</div>
+                    <div class="value"><?= $sales_stats['total_count'] ?? 0 ?></div>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-sub);">Lifetime Volume</div>
             </div>
-            <?php endif; ?>
+            <div class="stat-card">
+                <div>
+                    <div class="label">Active Inventory</div>
+                    <div class="value"><?= $product_count['total'] ?? 0 ?></div>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-sub);">SKUs in Stock</div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--danger);">
+                <div>
+                    <div class="label" style="color:var(--danger);">Critical Alerts</div>
+                    <div class="value" style="color:var(--danger);"><?= $low_stock_count['total'] ?? 0 ?></div>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-sub);">Low Stock Items</div>
+            </div>
         </div>
-    </div>
-</main>
+
+        <!-- 3. Executive Grid (2 Columns) -->
+        <div class="dashboard-grid">
+            <!-- Left Column: Data & Charts -->
+            <div class="main-column">
+                <!-- Quick Actions Panel (Moved Here) -->
+                <div class="quick-actions-panel">
+                    <h3 style="margin:0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">⚡ Quick Actions</h3>
+                    <div class="qa-grid"> <!-- Can reuse qa-grid or make a new wide one -->
+                        <a href="sales.php" class="qa-btn">
+                            <span>💸</span> New Sale
+                        </a>
+                        <a href="purchases.php" class="qa-btn">
+                            <span>📦</span> Restock
+                        </a>
+                        <a href="products.php" class="qa-btn">
+                            <span>🏷️</span> Product
+                        </a>
+                        <a href="reports.php" class="qa-btn">
+                            <span>📊</span> Reports
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sales Chart -->
+                <div class="chart-panel">
+                    <h3>📈 Revenue Trend (7 Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Actions & Alerts -->
+            <div class="side-column">
+                <!-- Category Distribution Mini (Moved to Top of Side) -->
+                <div class="chart-panel">
+                    <h3>📊 Distribution</h3>
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Stock Warnings Feed (Below Pie Chart) -->
+                <div class="chart-panel">
+                    <h3>⚠️ Low Stock Feed</h3>
+                    <div class="alert-feed">
+                        <?php if ($low_stock_products && mysqli_num_rows($low_stock_products) > 0): ?>
+                            <?php 
+                            // Reset pointer just in case
+                            mysqli_data_seek($low_stock_products, 0);
+                            while($item = mysqli_fetch_assoc($low_stock_products)): 
+                            ?>
+                            <div class="alert-item">
+                                <div>
+                                    <strong><?= htmlspecialchars($item['product_name']) ?></strong>
+                                    <span><?= $item['total_qty'] ?> Units Remaining</span>
+                                </div>
+                                <a href="purchases.php" class="btn-restock">Add</a>
+                            </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <div style="text-align:center; padding: 2rem; color:var(--text-sub);">
+                                <div style="font-size:2rem; margin-bottom:0.5rem; opacity:0.5;">✅</div>
+                                Stock levels optimal
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
 <script>
     // 1. Sales Trend Chart
@@ -381,12 +200,14 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 label: 'Sales (रु)',
                 data: <?= json_encode($chart_data) ?>,
                 borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                borderWidth: 3,
+                backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                borderWidth: 2,
                 fill: true,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: '#2563eb'
+                tension: 0.3,
+                pointRadius: 3,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#2563eb',
+                pointBorderWidth: 2
             }]
         },
         options: {
@@ -394,8 +215,15 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                x: { grid: { display: false } }
+                y: { 
+                    beginAtZero: true, 
+                    grid: { color: '#f1f5f9', drawBorder: false },
+                    ticks: { font: { family: "'Inter', sans-serif", size: 11 } }
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: { font: { family: "'Inter', sans-serif", size: 11 } }
+                }
             }
         }
     });
@@ -409,25 +237,20 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             datasets: [{
                 data: <?= json_encode($cat_values) ?>,
                 backgroundColor: ['#2563eb', '#059669', '#d97706', '#dc2626', '#64748b'],
-                borderWidth: 2,
-                borderColor: '#ffffff'
+                borderWidth: 0,
+                hoverOffset: 4
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                legend: { 
+                    display: false // Hide legend to save space in sidebar
+                }
             },
             cutout: '70%'
         }
-    });
-
-    // Sidebar Responsiveness
-    window.addEventListener('resize', () => {
-        const main = document.querySelector('.main-content');
-        if (window.innerWidth <= 900) { main.style.marginLeft = '0'; } 
-        else { main.style.marginLeft = '220px'; }
     });
 </script>
 

@@ -39,34 +39,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Register - Inventory Management</title>
-        <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/register.css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="form-box">
-                <h2>Register</h2>
-                <?php if (isset($_GET['error'])): ?>
-                    <div class="error-message">
-                        <?php echo htmlspecialchars($_GET['error']); ?>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($_GET['success'])): ?>
-                    <div class="success-message">
-                        <?php echo htmlspecialchars($_GET['success']); ?>
-                    </div>
-                <?php endif; ?>
-                <form action="/INVENTORY_SYSTEM/BACKEND/user/register.php" method="POST">
-                    <div class="input-group">
-                        <input type="text" name="username" placeholder="Username" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" placeholder="Password" required>
-                    </div>
-                    <button type="submit">Register</button>
-                </form>
-                <p class="form-link">Already have an account? <a href="/INVENTORY_SYSTEM/BACKEND/user/login.php">Login here</a></p>
-            </div>
+    <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-box">
+            <h2>Join Us</h2>
+            <p class="form-subtitle">Create an account to start managing your business</p>
+            
+            <?php if (isset($_GET['error'])): ?>
+                <div class="error-message">
+                    <?php echo htmlspecialchars($_GET['error']); ?>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($_GET['success'])): ?>
+                <div class="success-message" style="background: #dcfce7; color: #166534; padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 1.5rem; text-align: center; font-size: 0.85rem; font-weight: 500; border: 1px solid #bcf0da;">
+                    <?php echo htmlspecialchars($_GET['success']); ?>
+                </div>
+            <?php endif; ?>
+
+            <form action="/INVENTORY_SYSTEM/BACKEND/user/register.php" method="POST">
+                <div class="input-group">
+                    <label>Choose Username</label>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <label>Create Password</label>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit">Create Account</button>
+            </form>
+            <p class="form-link">Already have an account? <a href="/INVENTORY_SYSTEM/BACKEND/user/login.php">Sign In</a></p>
         </div>
+    </div>
     </body>
     </html>
     <?php

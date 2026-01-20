@@ -2,20 +2,25 @@
 // Sales card component
 ?>
 <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/sales_card.css">
-<div class="sales-card">
-  <div class="sales-card-header">
-    <span class="sales-card-title">Sale #<?= htmlspecialchars($sale['sales_id']) ?></span>
-    <span class="sales-card-date"><?= htmlspecialchars($sale['sales_date']) ?></span>
-  </div>
-  <div class="sales-card-body">
-    <div class="sales-card-info"><span class="sales-card-label">Product:</span> <span><?= htmlspecialchars($sale['product_id']) ?></span></div>
-    <div class="sales-card-info"><span class="sales-card-label">Customer:</span> <span><?= htmlspecialchars($sale['customer_id']) ?></span></div>
-    <div class="sales-card-info"><span class="sales-card-label">Quantity:</span> <span><?= htmlspecialchars($sale['quantity']) ?></span></div>
-    <div class="sales-card-info"><span class="sales-card-label">Total Price:</span> <span><?= htmlspecialchars($sale['total_price']) ?></span></div>
-  </div>
-  <div class="sales-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
-  </div>
+<div class="premium-card">
+    <div class="icon-box" style="background: #f0fdf4; color: #166534;">💰</div>
+    
+    <div>
+        <div class="card-title"><?= htmlspecialchars($sale['product_name'] ?? 'Product #'.$sale['product_id']) ?></div>
+        <div class="card-subtitle">
+            <div style="font-weight: 600; color: #1e293b;">👤 <?= htmlspecialchars($sale['customer_name'] ?? 'Customer #'.$sale['customer_id']) ?></div>
+            <div style="font-size: 0.8rem; margin-top: 4px;">📅 <?= date('M d, Y', strtotime($sale['sales_date'])) ?></div>
+        </div>
+    </div>
+
+    <div class="card-stats">
+        <div class="stat-item">
+            <span class="stat-label">Qty</span>
+            <span class="stat-value"><?= $sale['quantity'] ?></span>
+        </div>
+        <div class="stat-item" style="margin-left:auto; text-align:right;">
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value" style="color: #059669; font-size: 1.1rem;">रु <?= number_format($sale['total_price'], 2) ?></span>
+        </div>
+    </div>
 </div>

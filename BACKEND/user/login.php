@@ -49,22 +49,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <body>
         <div class="container">
             <div class="form-box">
-                <h2>Login</h2>
+                <h2>Welcome Back</h2>
+                <p class="form-subtitle">Please sign in to manage your inventory</p>
+                
                 <?php if (isset($_GET['error'])): ?>
                     <div class="error-message">
                         <?php echo htmlspecialchars($_GET['error']); ?>
                     </div>
                 <?php endif; ?>
+
                 <form action="/INVENTORY_SYSTEM/BACKEND/user/login.php" method="POST">
                     <div class="input-group">
-                        <input type="text" name="username" placeholder="Username" required>
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="Enter your username" required>
                     </div>
                     <div class="input-group">
-                        <input type="password" name="password" placeholder="Password" required>
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Enter your password" required>
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="submit">Sign In</button>
                 </form>
-                <p class="form-link">Don't have an account? <a href="/INVENTORY_SYSTEM/BACKEND/user/register.php">Register here</a></p>
+                <p class="form-link">New here? <a href="/INVENTORY_SYSTEM/BACKEND/user/register.php">Create an account</a></p>
             </div>
         </div>
     </body>

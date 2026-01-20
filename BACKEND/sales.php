@@ -34,24 +34,22 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales | Inventory Manager</title>
-    <link rel="stylesheet" href="css/sales.css">
-    <link rel="stylesheet" href="css/sales_card.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/shared_cards.css">
 </head>
 <body>
 <div class="container">
     <?php include __DIR__ . '/components/sidebar.php'; ?>
     
-    <div class="header">
-        <div>
-            <div class="header-title">Sales</div>
-            <div class="header-sub">Record and track customer sales</div>
-        </div>
-        <button class="add-btn" onclick="document.getElementById('addSalesModal').style.display='block'">New Sale</button>
-    </div>
-
-    <!-- Main Content -->
     <div class="main-content">
-        <div class="sales-card-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
+        <div class="header">
+            <div>
+                <div class="header-title">Sales</div>
+                <div class="header-sub">Record and track customer sales</div>
+            </div>
+            <button class="add-btn" onclick="document.getElementById('addSalesModal').style.display='flex'">New Sale</button>
+        </div>
+        <div class="sales-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:25px;">
             <?php foreach ($sales as $sale): ?>
                 <?php include __DIR__ . '/components/sales_card.php'; ?>
             <?php endforeach; ?>
@@ -65,10 +63,10 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
 
     <!-- Add Sales Modal -->
     <div id="addSalesModal" class="modal-bg">
-        <div class="modal-content modal-content-spacious" style="max-width: 550px;">
+        <div class="modal-content modal-content" style="max-width: 550px;">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Record New Sale</h2>
             <form method="POST" action="sales/add.php">
-                <div class="modal-fields modal-fields-spacious">
+                <div class="modal-fields modal-fields">
                     <label class="modal-label">Sale Date
                         <input type="date" name="sales_date" value="<?= date('Y-m-d') ?>" required>
                     </label>
@@ -95,7 +93,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                         <label class="modal-label">New Customer Name
                             <input type="text" name="new_customer_name" id="new_customer_name" placeholder="Enter customer name">
                         </label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                             <label class="modal-label">Email
                                 <input type="email" name="customer_email" placeholder="Email (optional)">
                             </label>
@@ -116,7 +114,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                         </select>
                     </label>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
                         <label class="modal-label">Quantity
                             <input type="number" name="quantity" id="sale_quantity" placeholder="0" min="1" required oninput="calculateSaleTotal()">
                         </label>
@@ -129,9 +127,9 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                         <input type="number" name="total_price" id="sale_total_price" placeholder="0.00" step="0.01" readonly required style="background: #f1f5f9; font-weight: bold; color: #059669; font-size: 1.2rem;">
                     </label>
 
-                    <div class="modal-actions modal-actions-spacious">
-                        <button type="button" class="modal-cancel modal-cancel-spacious" onclick="document.getElementById('addSalesModal').style.display='none'">Cancel</button>
-                        <button type="submit" class="add-btn add-btn-spacious">Complete Sale</button>
+                    <div class="modal-actions modal-actions">
+                        <button type="button" class="modal-cancel modal-cancel" onclick="document.getElementById('addSalesModal').style.display='none'">Cancel</button>
+                        <button type="submit" class="add-btn add-btn">Complete Sale</button>
                     </div>
                 </div>
             </form>

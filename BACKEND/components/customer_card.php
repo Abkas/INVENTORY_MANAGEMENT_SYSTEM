@@ -2,22 +2,26 @@
 // Customer card component
 ?>
 <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/customer_card.css">
-<div class="customer-card">
-  <div class="customer-card-header">
-    <span class="customer-card-title"><?= htmlspecialchars($customer['customer_name']) ?></span>
-  </div>
-  <div class="customer-card-body">
-    <div class="customer-card-info">
-      <span class="customer-card-label">Email:</span>
-      <span><?= htmlspecialchars($customer['customer_email']) ?></span>
+<div class="premium-card">
+    <div class="card-actions">
+        <button class="action-btn btn-edit" title="Edit Customer" onclick="openEditModal(<?= $customer['customer_id'] ?>, '<?= addslashes($customer['customer_name']) ?>', '<?= addslashes($customer['customer_email']) ?>', '<?= addslashes($customer['customer_phone']) ?>')">✎</button>
+        <button class="action-btn btn-delete" title="Delete Customer" onclick="confirmDelete(<?= $customer['customer_id'] ?>)">🗑</button>
     </div>
-    <div class="customer-card-info">
-      <span class="customer-card-label">Phone:</span>
-      <span><?= htmlspecialchars($customer['customer_phone']) ?></span>
+
+    <div class="icon-box" style="background: #f5f3ff; color: #7c3aed;">👤</div>
+    
+    <div>
+        <div class="card-title"><?= htmlspecialchars($customer['customer_name']) ?></div>
+        <div class="card-subtitle">
+            <div style="margin-bottom: 2px;">📧 <?= htmlspecialchars($customer['customer_email'] ?: 'No Email') ?></div>
+            <div>📞 <?= htmlspecialchars($customer['customer_phone'] ?: 'No Phone') ?></div>
+        </div>
     </div>
-  </div>
-  <div class="customer-card-actions">
-    <button class="action-btn" onclick="openEditModal(<?= $customer['customer_id'] ?>, '<?= addslashes($customer['customer_name']) ?>', '<?= addslashes($customer['customer_email']) ?>', '<?= addslashes($customer['customer_phone']) ?>')">Edit</button>
-    <button class="action-btn delete-btn" style="background:#fee2e2;color:#991b1b;" onclick="confirmDelete(<?= $customer['customer_id'] ?>)">Delete</button>
-  </div>
+
+    <div class="card-stats">
+        <div class="stat-item">
+            <span class="stat-label">Customer ID</span>
+            <span class="stat-value">#<?= $customer['customer_id'] ?></span>
+        </div>
+    </div>
 </div>

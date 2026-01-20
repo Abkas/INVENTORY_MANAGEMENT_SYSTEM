@@ -2,18 +2,21 @@
 // Stock card component
 ?>
 <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/stock_card.css">
-<div class="stock-card">
-  <div class="stock-card-header">
-    <span class="stock-card-title">Stock #<?= htmlspecialchars($stock['stock_id']) ?></span>
-  </div>
-  <div class="stock-card-body">
-    <div class="stock-card-info"><span class="stock-card-label">Product:</span> <span><?= htmlspecialchars($stock['product_name']) ?></span></div>
-    <div class="stock-card-info"><span class="stock-card-label">Warehouse:</span> <span><?= htmlspecialchars($stock['warehouse_name']) ?></span></div>
-    <div class="stock-card-info"><span class="stock-card-label">Quantity:</span> <span><?= htmlspecialchars($stock['quantity']) ?></span></div>
-  </div>
-  <div class="stock-card-actions">
-    <button class="action-btn">View</button>
-    <button class="action-btn">Edit</button>
-    <button class="action-btn">Delete</button>
-  </div>
+<div class="premium-card">
+    <div class="icon-box" style="background: #fdf2f8; color: #db2777;">📦</div>
+    
+    <div>
+        <div class="card-title"><?= htmlspecialchars($stock['product_name']) ?></div>
+        <div class="card-subtitle">
+            <div style="font-weight: 600; color: #475569;">📍 <?= htmlspecialchars($stock['warehouse_name']) ?></div>
+            <div style="font-size: 0.75rem; margin-top: 4px; color: #94a3b8;">Record ID: #<?= $stock['stock_id'] ?></div>
+        </div>
+    </div>
+
+    <div class="card-stats">
+        <div class="stat-item">
+            <span class="stat-label">Available Stock</span>
+            <span class="stat-value" style="font-size: 1.25rem;"><?= $stock['quantity'] ?> Units</span>
+        </div>
+    </div>
 </div>
