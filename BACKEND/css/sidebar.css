@@ -148,19 +148,24 @@
   }
 }
 
-/* Base styles for pages using the sidebar */
+/* Base styles for pages using the sidebar - FULL WIDTH */
 .main-content {
   margin-left: 240px;
   transition: margin-left 0.3s ease;
   min-height: 100vh;
   padding: 2rem;
   background: #f8fafc;
+  width: calc(100vw - 240px);
+  /* Full viewport width minus sidebar */
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
   .main-content {
     margin-left: 0 !important;
     padding: 1.25rem;
+    width: 100vw;
+    /* Full viewport width on mobile */
   }
 }
 
