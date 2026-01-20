@@ -1,4 +1,11 @@
-/* dashboard.css - Executive Layout */
+/* dashboard.css - Executive Layout - FULLY RESPONSIVE */
+
+/* Global box-sizing fix */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 /* Hero / Welcome */
 .welcome-section {
@@ -11,6 +18,7 @@
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
+    max-width: 100%;
 }
 
 .welcome-text h1 {
@@ -19,12 +27,14 @@
     color: var(--text-main);
     letter-spacing: -0.025em;
     margin: 0;
+    word-wrap: break-word;
 }
 
 .welcome-text p {
     color: var(--text-sub);
     font-size: 0.95rem;
     margin: 0.25rem 0 0 0;
+    word-wrap: break-word;
 }
 
 /* Primary Stat Cards (Horizontal Stream) */
@@ -33,6 +43,7 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.25rem;
     margin-bottom: 2rem;
+    width: 100%;
 }
 
 .stat-card {
@@ -46,6 +57,9 @@
     justify-content: space-between;
     height: 100%;
     transition: transform 0.2s;
+    max-width: 100%;
+    min-width: 0;
+    /* Prevent flex overflow */
 }
 
 .stat-card:hover {
@@ -60,6 +74,7 @@
     color: var(--text-sub);
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
 }
 
 .stat-card .value {
@@ -67,6 +82,7 @@
     font-weight: 800;
     color: var(--text-main);
     letter-spacing: -0.03em;
+    word-wrap: break-word;
 }
 
 .stat-card .growth {
@@ -78,6 +94,7 @@
     padding: 0.25rem 0.75rem;
     border-radius: 99px;
     width: fit-content;
+    max-width: 100%;
 }
 
 .growth.up {
@@ -95,18 +112,24 @@
     display: grid;
     grid-template-columns: 2.5fr 1fr;
     gap: 1.5rem;
+    width: 100%;
+    max-width: 100%;
 }
 
 .main-column {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 .side-column {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 /* Panels */
@@ -117,6 +140,9 @@
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    max-width: 100%;
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 .chart-panel h3 {
@@ -127,6 +153,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    word-wrap: break-word;
 }
 
 /* Scrollable Chart Container */
@@ -134,21 +161,17 @@
     position: relative;
     width: 100%;
     height: 300px;
+    max-height: 400px;
+    max-width: 100%;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
 /* Force chart canvas to have a min-width on small screens so it's scrollable */
 .chart-container canvas {
-    min-width: 100%;
-}
-
-@media (max-width: 640px) {
-    .chart-container canvas {
-        min-width: 600px;
-        /* Force scroll if screen is narrower than 600px */
-    }
+    max-width: 100%;
+    min-height: 300px;
 }
 
 /* Quick Actions (Wide Layout) */
@@ -157,14 +180,15 @@
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     color: white;
+    max-width: 100%;
 }
 
 .qa-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* 4 columns for wider main area */
     gap: 0.75rem;
     margin-top: 1rem;
+    width: 100%;
 }
 
 .qa-btn {
@@ -172,10 +196,8 @@
     color: white;
     text-decoration: none;
     padding: 1rem;
-    /* Slightly larger padding */
     border-radius: var(--radius-md);
     font-size: 0.9rem;
-    /* Slightly larger text */
     font-weight: 600;
     display: flex;
     flex-direction: column;
@@ -185,6 +207,9 @@
     transition: background 0.2s;
     border: 1px solid rgba(255, 255, 255, 0.05);
     text-align: center;
+    min-width: 0;
+    /* Prevent overflow */
+    word-wrap: break-word;
 }
 
 .qa-btn:hover {
@@ -202,6 +227,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    width: 100%;
 }
 
 .alert-item {
@@ -212,17 +238,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .alert-item strong {
     font-size: 0.9rem;
     color: #991b1b;
     display: block;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .alert-item span {
     font-size: 0.75rem;
     color: #b91c1c;
+    word-wrap: break-word;
 }
 
 .btn-restock {
@@ -235,6 +266,8 @@
     font-weight: 700;
     text-decoration: none;
     text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-restock:hover {
@@ -244,7 +277,9 @@
 /* Table */
 .table-wrap {
     width: 100%;
+    max-height: 400px;
     overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 0.5rem;
 }
@@ -277,7 +312,9 @@ tr:last-child td {
     border-bottom: none;
 }
 
-/* Responsive */
+/* Responsive Breakpoints */
+
+/* Tablet (1024px and below) */
 @media (max-width: 1024px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
@@ -286,17 +323,106 @@ tr:last-child td {
     .side-column {
         flex-direction: column;
     }
-
-    /* Keep natural order on mobile */
-    /* Removed qa-grid rule to keep it 4 columns */
 }
 
-@media (max-width: 640px) {
+/* Mobile Large (768px and below) */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+
+    .stat-card {
+        padding: 1rem 1.25rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.5rem;
+    }
+
+    .chart-panel {
+        padding: 1.25rem;
+    }
+
     .qa-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* Mobile Small (640px and below) */
+@media (max-width: 640px) {
+    .welcome-section {
+        padding: 1rem;
+    }
+
+    .welcome-text h1 {
+        font-size: 1.25rem;
+    }
+
+    .welcome-text p {
+        font-size: 0.875rem;
+    }
 
     .stats-grid {
-        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.35rem;
+    }
+
+    .chart-panel {
+        padding: 1rem;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .qa-grid {
+        gap: 0.5rem;
+    }
+
+    .qa-btn {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .qa-btn span {
+        font-size: 1.25rem;
+    }
+
+    table {
+        font-size: 0.8rem;
+    }
+
+    th,
+    td {
+        padding: 0.65rem 0.75rem;
+    }
+}
+
+/* Extra Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .welcome-text h1 {
+        font-size: 1.1rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.25rem;
+    }
+
+    .chart-container {
+        height: 220px;
     }
 }
