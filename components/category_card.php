@@ -1,5 +1,4 @@
 <?php
-// Category card component
 ?>
 <link rel="stylesheet" href="css/category_card.css">
 <div class="premium-card">

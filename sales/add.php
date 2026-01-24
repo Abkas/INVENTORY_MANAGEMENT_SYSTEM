@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sales_date'], $_POST[
 
     $is_new_customer = isset($_POST['is_new_customer']);
 
-    // 1. Check total stock before doing anything else
     $stock_result = mysqli_query($conn, "SELECT SUM(quantity) as total_stock FROM stock WHERE product_id = $product_id");
     $stock_row = mysqli_fetch_assoc($stock_result);
     $total_stock = $stock_row ? intval($stock_row['total_stock']) : 0;
@@ -27,14 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sales_date'], $_POST[
         exit();
     }
 
-    // Start Transaction
     mysqli_begin_transaction($conn);
 
     try {
         $customer_id = 0;
 
         if ($is_new_customer) {
-            // Create New Customer
             $name = mysqli_real_escape_string($conn, $_POST['new_customer_name']);
             $email = mysqli_real_escape_string($conn, $_POST['customer_email']);
             $phone = mysqli_real_escape_string($conn, $_POST['customer_phone']);
@@ -50,21 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sales_date'], $_POST[
             }
             $customer_id = mysqli_insert_id($conn);
         } else {
-            // Use Existing Customer
             $customer_id = intval($_POST['customer_id']);
             if ($customer_id <= 0) {
                 throw new Exception("Please select a valid customer.");
             }
         }
 
-        // 2. Insert into sales table
         $sale_query = "INSERT INTO sales (sales_date, quantity, total_price, customer_id, product_id, user_id) 
                        VALUES ('$sales_date', '$quantity', '$total_price', '$customer_id', '$product_id', '$user_id')";
         if (!mysqli_query($conn, $sale_query)) {
             throw new Exception("Could not record sale: " . mysqli_error($conn));
         }
 
-        // 3. Reduce stock (FIFO style from warehouses)
         $qty_to_reduce = $quantity;
         $stock_q = mysqli_query($conn, "SELECT * FROM stock WHERE product_id = $product_id AND quantity > 0 ORDER BY stock_id ASC");
 

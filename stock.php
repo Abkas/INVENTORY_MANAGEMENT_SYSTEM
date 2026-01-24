@@ -5,7 +5,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 require_once __DIR__ . '/db/connect.php';
-// Handle add stock
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'], $_POST['warehouse_id'], $_POST['quantity'])) {
     $product_id = intval($_POST['product_id']);
     $warehouse_id = intval($_POST['warehouse_id']);
@@ -17,19 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'], $_POST[
         exit();
     }
 }
-// Fetch products
 $prod_result = mysqli_query($conn, "SELECT * FROM product ORDER BY product_name ASC");
 $products = [];
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
 }
-// Fetch warehouses
 $wh_result = mysqli_query($conn, "SELECT * FROM warehouse ORDER BY warehouse_name ASC");
 $warehouses = [];
 while ($row = mysqli_fetch_assoc($wh_result)) {
     $warehouses[] = $row;
 }
-// Fetch stock
 $stock_result = mysqli_query($conn, "SELECT s.*, p.product_name, w.warehouse_name FROM stock s JOIN product p ON s.product_id = p.product_id JOIN warehouse w ON s.warehouse_id = w.warehouse_id ORDER BY s.stock_id DESC");
 $stocks = [];
 while ($row = mysqli_fetch_assoc($stock_result)) {
@@ -69,14 +65,12 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
             </div>
         </div>
         
-        <!-- Card View -->
         <div id="view-card" class="stock-card-grid responsive-grid">
             <?php foreach ($stocks as $stock): ?>
                 <?php include __DIR__ . '/components/stock_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -84,6 +78,7 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                         <th style="width: 40%;">Product</th>
                         <th style="width: 30%;">Warehouse</th>
                         <th style="text-align:right;">Quantity</th>
+                        <th style="width: 50px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,6 +98,10 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                                 <?= number_format($stock['quantity']) ?>
                             </span>
                         </td>
+                        <td style="text-align: right;">
+                             <a href="product/view.php?id=<?= $stock['product_id'] ?>" style="color: #64748b; display: inline-flex; align-items: center; justify-content: center;" title="View Details">
+                                <i data-lucide="eye" style="width: 18px;"></i>
+                            </a>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -129,14 +128,12 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                 }
             }
             
-            // Initialize icons
             document.addEventListener('DOMContentLoaded', () => {
                 if(window.lucide) lucide.createIcons();
             });
         </script>
     </div>
 
-    <!-- Add Stock Modal -->
     <div id="addStockModal" class="modal-bg">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Stock</h2>

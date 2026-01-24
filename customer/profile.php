@@ -13,7 +13,6 @@ if (!isset($_GET['id'])) {
 
 $customer_id = intval($_GET['id']);
 
-// Fetch customer details
 $cust_query = "SELECT * FROM customer WHERE customer_id = $customer_id";
 $cust_result = mysqli_query($conn, $cust_query);
 $customer = mysqli_fetch_assoc($cust_result);
@@ -22,7 +21,6 @@ if (!$customer) {
     die("Customer not found.");
 }
 
-// Fetch sales history
 $sales_query = "
     SELECT s.*, p.product_name 
     FROM sales s 
@@ -61,11 +59,9 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                 <div class="header-title"><?= htmlspecialchars($customer['customer_name']) ?></div>
                 <div class="header-sub">Customer Profile & History</div>
             </div>
-            <!-- Future: Add Edit Button Here -->
         </div>
 
         <div class="responsive-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
-            <!-- Info Card -->
             <div class="premium-card" style="min-height: auto;">
                 <div style="display:flex; gap:16px; align-items:center;">
                     <div class="icon-box" style="margin-bottom:0; background:#eff6ff; color:#2563eb;">
@@ -83,7 +79,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                 </div>
             </div>
 
-            <!-- Stats Card -->
             <div class="premium-card" style="min-height: auto;">
                 <div style="display:flex; gap:16px; align-items:center;">
                     <div class="icon-box" style="margin-bottom:0; background:#dcfce7; color:#166534;">

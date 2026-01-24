@@ -6,19 +6,16 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch categories
 $cat_result = mysqli_query($conn, "SELECT * FROM category ORDER BY category_name ASC");
 $categories = [];
 while ($row = mysqli_fetch_assoc($cat_result)) {
     $categories[] = $row;
 }
-// Fetch suppliers
 $sup_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY supplier_name ASC");
 $suppliers = [];
 while ($row = mysqli_fetch_assoc($sup_result)) {
     $suppliers[] = $row;
 }
-// Fetch products with category, supplier, and total stock
 $prod_result = mysqli_query($conn, "
     SELECT p.*, c.category_name, s.supplier_name, COALESCE(SUM(st.quantity), 0) as total_stock 
     FROM product p 
@@ -69,14 +66,12 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
             </div>
         </div>
 
-        <!-- Product Card Grid -->
         <div id="view-card" class="product-card-grid responsive-grid">
             <?php foreach ($products as $product) {
                 include __DIR__ . '/components/product_card.php';
             } ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -154,13 +149,11 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
                 }
             }
             
-            // Initialize icons when dom loads
             document.addEventListener('DOMContentLoaded', () => {
                 if(window.lucide) lucide.createIcons();
             });
         </script>
 
-        <!-- Add Product Modal -->
         <div id="addProductModal" class="modal-bg" style="display:none;">
             <div class="modal-content modal-content">
                 <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Product</h2>
@@ -198,7 +191,6 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
             </div>
         </div>
 
-        <!-- Edit Product Modal -->
         <div id="editProductModal" class="modal-bg" style="display:none;">
             <div class="modal-content modal-content">
                 <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Product</h2>

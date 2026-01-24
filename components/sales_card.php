@@ -1,5 +1,4 @@
 <?php
-// Sales card component
 ?>
 <link rel="stylesheet" href="css/sales_card.css">
 <div class="premium-card">

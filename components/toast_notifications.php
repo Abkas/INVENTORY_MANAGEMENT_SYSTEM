@@ -1,7 +1,5 @@
 <?php
-// Toast Notifications Component
-// Checks for session 'msg' (Success) or 'error' (Error) and displays a toast
-// Requires Lucide Icons (script tag in header)
+
 ?>
 <style>
     .toast-container {
@@ -119,17 +117,14 @@
 
         container.appendChild(toast);
         
-        // Refresh icons
         if (window.lucide) {
             lucide.createIcons();
         }
 
-        // Trigger animation
         requestAnimationFrame(() => {
             toast.classList.add('show');
         });
 
-        // Auto remove
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => {

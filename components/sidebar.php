@@ -1,4 +1,3 @@
-<!-- Sidebar Navigation Component (HTML/CSS) -->
 <link rel="stylesheet" href="<?= $path_prefix ?? '' ?>css/sidebar.css">
 <link rel="stylesheet" href="<?= $path_prefix ?? '' ?>css/confirm_modal.css">
 <script src="<?= $path_prefix ?? '' ?>js/confirm_modal.js"></script>
@@ -9,7 +8,6 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon">
-      <!-- You can use an SVG icon here -->
       <span>📦</span>
     </div>
     <div>
@@ -49,7 +47,6 @@ function confirmLogout() {
             }
         });
     } else {
-        // Fallback to standard confirm if modal not loaded
         if (confirm('Are you sure you want to logout?')) {
             window.location.href = '<?= $path_prefix ?? '' ?>user/logout.php';
         }
@@ -65,7 +62,6 @@ let isSidebarOpen = false; // Track if sidebar is manually opened on mobile
 
 function updateSidebarState() {
   const isMobile = window.innerWidth <= 900;
-  // console.log('updateSidebarState called, window width:', window.innerWidth, 'isMobile:', isMobile);
   if (isMobile) {
     hamburger.style.display = 'flex';
     navbarMobile.style.display = 'flex';
@@ -81,7 +77,7 @@ function updateSidebarState() {
     sidebar.style.transform = '';
     hamburger.style.display = 'none';
     navbarMobile.style.display = 'none';
-    isSidebarOpen = false; // Reset on desktop
+    isSidebarOpen = false; 
   }
 }
 

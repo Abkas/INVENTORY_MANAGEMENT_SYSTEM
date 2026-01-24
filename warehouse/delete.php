@@ -9,7 +9,6 @@ require_once __DIR__ . '/../db/connect.php';
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     
-    // Check if warehouse has any stock
     $stock_check = mysqli_query($conn, "SELECT COUNT(*) as count FROM stock WHERE warehouse_id = $id");
     $stock_row = mysqli_fetch_assoc($stock_check);
     

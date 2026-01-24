@@ -1,5 +1,4 @@
 <?php
-// Purchase card component
 ?>
 <link rel="stylesheet" href="css/purchase_card.css">
 <div class="premium-card">

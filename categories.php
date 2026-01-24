@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch categories with product count and product names
 $result = mysqli_query($conn, "
     SELECT c.*, 
            COUNT(p.product_id) as product_count,
@@ -18,7 +17,6 @@ $result = mysqli_query($conn, "
 ");
 $categories = [];
 while ($row = mysqli_fetch_assoc($result)) {
-    // Split product names into an array
     $row['products'] = !empty($row['product_names']) ? explode('|||', $row['product_names']) : [];
     $categories[] = $row;
 }
@@ -58,16 +56,10 @@ while ($row = mysqli_fetch_assoc($result)) {
             </div>
         </div>
 
-        <!-- Feedback Messages -->
-        
-        <!-- Card View -->
         <div id="view-card" class="category-card-grid responsive-grid">
             <?php foreach ($categories as $category): ?>
                 <?php include __DIR__ . '/components/category_card.php'; ?>
-            <?php endforeach; ?>
         </div>
-
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -107,7 +99,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Add Category Modal -->
     <div id="addCategoryModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Category</h2>
@@ -126,7 +117,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Edit Category Modal -->
     <div id="editCategoryModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Category</h2>
@@ -166,7 +156,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         }
     }
 
-    // Initialize icons
     document.addEventListener('DOMContentLoaded', () => {
         if(window.lucide) lucide.createIcons();
     });

@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch suppliers
 $result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY supplier_id DESC");
 $suppliers = [];
 while ($row = mysqli_fetch_assoc($result)) {
@@ -52,14 +51,12 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="msg-success"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
         <?php endif; ?>
         
-        <!-- Card View -->
         <div id="view-card" class="supplier-card-grid responsive-grid">
             <?php foreach ($suppliers as $supplier): ?>
                 <?php include __DIR__ . '/components/supplier_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -107,7 +104,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Add Supplier Modal -->
     <div id="addSupplierModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Supplier</h2>
@@ -132,7 +128,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Edit Supplier Modal -->
     <div id="editSupplierModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Supplier</h2>
@@ -178,7 +173,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         }
     }
 
-    // Initialize icons
     document.addEventListener('DOMContentLoaded', () => {
         if(window.lucide) lucide.createIcons();
     });

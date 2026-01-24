@@ -1,5 +1,4 @@
 <?php
-// Supplier card component
 ?>
 <link rel="stylesheet" href="css/supplier_card.css">
 <div class="premium-card">

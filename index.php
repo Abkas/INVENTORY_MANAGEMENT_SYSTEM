@@ -8,12 +8,10 @@ if (!isset($_SESSION['user'])) {
 
 require_once __DIR__ . '/db/connect.php';
 
-// --- 1. Basic Stats ---
 $sales_stats = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total_price) as total_val, COUNT(*) as total_count FROM sales"));
 $product_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM product"));
 $low_stock_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM (SELECT product_id FROM stock GROUP BY product_id HAVING SUM(quantity) < 10) as low_stock"));
 
-// --- 2. Today vs Yesterday (True Dynamic Stats) ---
 $today = date('Y-m-d');
 $yesterday = date('Y-m-d', strtotime("-1 days"));
 
@@ -26,7 +24,6 @@ $yesterday_val = $yesterday_sales['val'] ?? 0;
 $diff = $today_val - $yesterday_val;
 $perc = ($yesterday_val > 0) ? ($diff / $yesterday_val) * 100 : 0;
 
-// --- 3. Chart Data: Sales for Last 7 Days ---
 $chart_labels = [];
 $chart_data = [];
 for ($i = 6; $i >= 0; $i--) {
@@ -36,7 +33,6 @@ for ($i = 6; $i >= 0; $i--) {
     $chart_data[] = $s_res['val'] ?? 0;
 }
 
-// --- 4. Chart Data: Stock Distribution (Top 5 Categories) ---
 $cat_dist = mysqli_query($conn, "SELECT c.category_name, SUM(s.quantity) as qty FROM stock s JOIN product p ON s.product_id = p.product_id JOIN category c ON p.category_id = c.category_id GROUP BY c.category_id LIMIT 5");
 $cat_labels = [];
 $cat_values = [];
@@ -45,7 +41,6 @@ while($row = mysqli_fetch_assoc($cat_dist)) {
     $cat_values[] = $row['qty'];
 }
 
-// --- 5. Recent Activity ---
 $recent_sales = mysqli_query($conn, "SELECT s.*, p.product_name, c.customer_name FROM sales s JOIN product p ON s.product_id = p.product_id JOIN customer c ON s.customer_id = c.customer_id ORDER BY s.sales_id DESC LIMIT 5");
 $low_stock_products = mysqli_query($conn, "SELECT p.product_name, SUM(s.quantity) as total_qty FROM stock s JOIN product p ON s.product_id = p.product_id GROUP BY s.product_id HAVING total_qty < 10 LIMIT 5");
 
@@ -70,7 +65,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
     <?php include __DIR__ . '/components/sidebar.php'; ?>
 
     <main class="main-content">
-        <!-- 1. Hero / Welcome -->
         <div class="welcome-section">
             <div class="welcome-text">
                 <h1><?= $greeting ?>, <?= htmlspecialchars($_SESSION['user']) ?></h1>
@@ -82,7 +76,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             </div>
         </div>
 
-        <!-- 2. High-Level Stats -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div>
@@ -116,14 +109,11 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             </div>
         </div>
 
-        <!-- 3. Executive Grid (2 Columns) -->
         <div class="dashboard-grid">
-            <!-- Left Column: Data & Charts -->
             <div class="main-column">
-                <!-- Quick Actions Panel (Moved Here) -->
                 <div class="quick-actions-panel">
                     <h3 style="margin:0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">⚡ Quick Actions</h3>
-                    <div class="qa-grid"> <!-- Can reuse qa-grid or make a new wide one -->
+                    <div class="qa-grid"> 
                         <a href="sales.php" class="qa-btn">
                             <span>💸</span> New Sale
                         </a>
@@ -139,7 +129,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                     </div>
                 </div>
 
-                <!-- Sales Chart -->
                 <div class="chart-panel">
                     <h3>📈 Revenue Trend (7 Days)</h3>
                     <div class="chart-container">
@@ -148,9 +137,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 </div>
             </div>
 
-            <!-- Right Column: Actions & Alerts -->
             <div class="side-column">
-                <!-- Category Distribution Mini (Moved to Top of Side) -->
                 <div class="chart-panel">
                     <h3>📊 Distribution</h3>
                     <div style="height: 200px; position: relative;">
@@ -158,13 +145,11 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                     </div>
                 </div>
 
-                <!-- Stock Warnings Feed (Below Pie Chart) -->
                 <div class="chart-panel">
                     <h3>⚠️ Low Stock Feed</h3>
                     <div class="alert-feed">
                         <?php if ($low_stock_products && mysqli_num_rows($low_stock_products) > 0): ?>
                             <?php 
-                            // Reset pointer just in case
                             mysqli_data_seek($low_stock_products, 0);
                             while($item = mysqli_fetch_assoc($low_stock_products)): 
                             ?>
@@ -190,7 +175,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 </div>
 
 <script>
-    // 1. Sales Trend Chart
     const salesCtx = document.getElementById('salesChart').getContext('2d');
     new Chart(salesCtx, {
         type: 'line',
@@ -228,7 +212,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         }
     });
 
-    // 2. Category Pie Chart
     const catCtx = document.getElementById('categoryChart').getContext('2d');
     new Chart(catCtx, {
         type: 'doughnut',
@@ -246,7 +229,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             maintainAspectRatio: false,
             plugins: {
                 legend: { 
-                    display: false // Hide legend to save space in sidebar
+                    display: false 
                 }
             },
             cutout: '70%'

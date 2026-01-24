@@ -5,19 +5,17 @@ require_once __DIR__ . '/../AUTH/auth.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? 'staff'; // Default to staff
+    $role = $_POST['role'] ?? 'staff'; 
 
     if ($username === '' || $password === '') {
         header("Location: ../user/register.php?error=Username and password are required.");
         exit();
     }
     
-    // Validate role
     if (!in_array($role, ['admin', 'staff'])) {
         $role = 'staff';
     }
 
-    // Check if user exists
     $check = mysqli_query($conn, "SELECT * FROM user WHERE username='$username'");
     if (mysqli_num_rows($check) > 0) {
         header("Location: ../user/register.php?error=Username already exists.");
@@ -37,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ../user/login.php?success=Registration successful! Please login.");
     exit();
 } else {
-    // Display the register form
     ?>
     <!DOCTYPE html>
     <html lang="en">

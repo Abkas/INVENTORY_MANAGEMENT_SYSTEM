@@ -1,5 +1,4 @@
 <?php
-// Product card component
 ?>
 <link rel="stylesheet" href="css/product_card.css">
 

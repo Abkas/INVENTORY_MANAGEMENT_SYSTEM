@@ -6,25 +6,26 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch categories
 $categories = [];
 $cat_result = mysqli_query($conn, "SELECT * FROM category ORDER BY category_name ASC");
 while ($row = mysqli_fetch_assoc($cat_result)) {
     $categories[] = $row;
 }
-// Fetch products
 $products = [];
 $prod_result = mysqli_query($conn, "SELECT * FROM product ORDER BY product_name ASC");
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
 }
-// Fetch suppliers
 $suppliers = [];
 $sup_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY supplier_name ASC");
 while ($row = mysqli_fetch_assoc($sup_result)) {
     $suppliers[] = $row;
 }
-// Fetch purchases (with product and supplier name via product table)
+$warehouses = [];
+$wh_result = mysqli_query($conn, "SELECT * FROM warehouse ORDER BY warehouse_name ASC");
+while ($row = mysqli_fetch_assoc($wh_result)) {
+    $warehouses[] = $row;
+}
 $purchases = [];
 $pur_sql = "SELECT p.*, pr.product_name, s.supplier_name FROM purchase p ".
     "JOIN product pr ON p.product_id = pr.product_id ".
@@ -74,14 +75,12 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
             </div>
         </div>
 
-        <!-- Card View -->
         <div id="view-card" class="purchase-card-grid responsive-grid">
             <?php foreach ($purchases as $purchase): ?>
                 <?php include __DIR__ . '/components/purchase_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -151,7 +150,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
         }
     </script>
 
-    <!-- Add Purchase Modal -->
     <div id="addPurchaseModal" class="modal-bg">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Purchase</h2>
@@ -168,7 +166,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
                         </label>
                     </div>
 
-                    <!-- Existing Product Selection -->
                     <div id="existing_product_div">
                         <label class="modal-label">Select Product
                             <select name="product_id" id="product_select">
@@ -180,7 +177,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
                         </label>
                     </div>
 
-                    <!-- New Product Creation Fields -->
                     <div id="new_product_div" style="display: none;">
                         <label class="modal-label">New Product Name
                             <input type="text" name="new_product_name" placeholder="Enter product name">
@@ -213,6 +209,14 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
                             <input type="number" name="unit_price" id="unit_price" placeholder="0.00" step="0.01" oninput="calculateTotal()" required>
                         </label>
                     </div>
+
+                    <label class="modal-label">Target Warehouse
+                        <select name="warehouse_id" required>
+                            <?php foreach ($warehouses as $wh): ?>
+                                <option value="<?= $wh['warehouse_id'] ?>"><?= htmlspecialchars($wh['warehouse_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
                     
                     <label class="modal-label">Total Amount (रु)
                         <input type="number" name="total_price" id="total_price_input" placeholder="0.00" step="0.01" readonly required>
@@ -235,7 +239,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
         document.getElementById('existing_product_div').style.display = isNew ? 'none' : 'block';
         document.getElementById('new_product_div').style.display = isNew ? 'block' : 'none';
         
-        // Toggle required attributes
         const productSelect = document.getElementById('product_select');
         const newProdName = document.querySelector('input[name="new_product_name"]');
         
@@ -254,7 +257,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
         document.getElementById('total_price_input').value = (qty * price).toFixed(2);
     }
 
-    // Initialize Lucide Icons
     if (window.lucide) {
         lucide.createIcons();
     }

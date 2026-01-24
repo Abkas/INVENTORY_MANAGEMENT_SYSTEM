@@ -1,6 +1,4 @@
 <?php
-// Warehouse Card Component
-// Usage: expects $warehouse array with keys: warehouse_id, warehouse_name, location, capacity
 ?>
 <div class="premium-card">
     <div class="card-actions">

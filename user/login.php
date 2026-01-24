@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && verifyPassword($password, $user['password'])) {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['user'] = $user['username'];
-        $_SESSION['role'] = $user['role']; // Store role in session
+        $_SESSION['role'] = $user['role']; 
         header("Location: ../index.php");
         exit;
     } else {
@@ -37,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 } else {
-    // Display the login form
     ?>
     <!DOCTYPE html>
     <html lang="en">

@@ -1,5 +1,4 @@
 <?php
-// Staff card component
 ?>
 <div class="premium-card">
     <div class="card-actions">

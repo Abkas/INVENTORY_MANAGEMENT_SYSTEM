@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch customers
 $result = mysqli_query($conn, "SELECT * FROM customer ORDER BY customer_id DESC");
 $customers = [];
 while ($row = mysqli_fetch_assoc($result)) {
@@ -52,14 +51,12 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="msg-success"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
         <?php endif; ?>
         
-        <!-- Card View -->
         <div id="view-card" class="customer-card-grid responsive-grid">
             <?php foreach ($customers as $customer): ?>
                 <?php include __DIR__ . '/components/customer_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -110,7 +107,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Add Customer Modal -->
     <div id="addCustomerModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Customer</h2>
@@ -135,7 +131,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Edit Customer Modal -->
     <div id="editCustomerModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Customer</h2>
@@ -181,7 +176,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         }
     }
 
-    // Initialize icons
     document.addEventListener('DOMContentLoaded', () => {
         if(window.lucide) lucide.createIcons();
     });

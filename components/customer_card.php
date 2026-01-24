@@ -1,10 +1,8 @@
 <?php
-// Customer card component
 ?>
 <link rel="stylesheet" href="css/customer_card.css">
 <div class="premium-card">
     <div class="card-actions">
-        <!-- View Profile -->
         <a href="customer/profile.php?id=<?= $customer['customer_id'] ?>" class="action-btn" title="View Profile" style="background:#f0fdf4; color:#166534; text-decoration:none;">
             <i data-lucide="eye" style="width:16px;"></i>
         </a>

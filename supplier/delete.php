@@ -9,11 +9,9 @@ require_once __DIR__ . '/../db/connect.php';
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     
-    // Check if supplier has any products
     $product_check = mysqli_query($conn, "SELECT COUNT(*) as count FROM product WHERE supplier_id = $id");
     $product_row = mysqli_fetch_assoc($product_check);
     
-    // Check if supplier has any purchase history
     $purchase_check = mysqli_query($conn, "SELECT COUNT(*) as count FROM purchase WHERE supplier_id = $id");
     $purchase_row = mysqli_fetch_assoc($purchase_check);
     

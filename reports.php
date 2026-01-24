@@ -6,18 +6,15 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// 1. Total Sales & Purchases
 $sales_query = mysqli_query($conn, "SELECT SUM(total_price) as total_sales, COUNT(*) as sales_count FROM sales");
 $sales_data = mysqli_fetch_assoc($sales_query);
 
 $purchase_query = mysqli_query($conn, "SELECT SUM(total_price) as total_purchases, COUNT(*) as purchase_count FROM purchase");
 $purchase_data = mysqli_fetch_assoc($purchase_query);
 
-// 2. Stock Summary
 $stock_query = mysqli_query($conn, "SELECT SUM(s.quantity * p.unit_price) as stock_value, SUM(s.quantity) as total_items FROM stock s JOIN product p ON s.product_id = p.product_id");
 $stock_data = mysqli_fetch_assoc($stock_query);
 
-// 3. Data for Charts (Last 30 Days)
 $chart_labels = [];
 $chart_sales = [];
 $chart_purchases = [];
@@ -35,7 +32,6 @@ for ($i = 29; $i >= 0; $i--) {
     $chart_purchases[] = (float)($p_r['daily_total'] ?? 0);
 }
 
-// 4. Low Stock Alert
 $low_stock_query = mysqli_query($conn, "SELECT p.product_name, SUM(s.quantity) as total_qty FROM stock s JOIN product p ON s.product_id = p.product_id GROUP BY s.product_id HAVING total_qty < 10");
 $low_stock_items = [];
 while($row = mysqli_fetch_assoc($low_stock_query)) {
@@ -53,7 +49,6 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Report specific overrides if needed */
         @media print {
             .sidebar, .quick-actions-panel, .add-btn { display: none !important; }
             .main-content { margin-left: 0 !important; width: 100% !important; }
@@ -68,7 +63,6 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
     <?php include __DIR__ . '/components/sidebar.php'; ?>
 
     <main class="main-content">
-        <!-- 1. Header -->
         <div class="welcome-section">
             <div class="welcome-text">
                 <h1>Business Intelligence</h1>
@@ -76,7 +70,6 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
             </div>
         </div>
 
-        <!-- 2. Key Metrics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div>
@@ -118,11 +111,8 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
             </div>
         </div>
 
-        <!-- 3. Report Grid -->
         <div class="dashboard-grid">
-            <!-- Left Column: Detailed Data -->
             <div class="main-column">
-                <!-- Financial Chart -->
                 <div class="chart-panel">
                     <h3>📈 30-Day Performance Trend</h3>
                     <div class="chart-container">
@@ -130,7 +120,6 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                     </div>
                 </div>
 
-                <!-- Detailed Audit Log -->
                 <div class="chart-panel">
                     <h3>
                         <span>📋 Detailed Activity Log</span>
@@ -227,9 +216,7 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                 </div>
             </div>
 
-            <!-- Right Column: Alerts & Summary -->
             <div class="side-column">
-                 <!-- Critical Stock Feed -->
                  <div class="chart-panel">
                     <h3>⚠️ Critical Stock Levels</h3>
                     <div class="alert-feed" style="max-height: 500px;">

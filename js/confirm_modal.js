@@ -1,4 +1,3 @@
-// Custom Confirmation Modal System
 function showConfirmModal(options) {
     const {
         title = 'Are you sure?',
@@ -12,7 +11,6 @@ function showConfirmModal(options) {
         onCancel = () => { }
     } = options;
 
-    // Create modal HTML
     const modalHTML = `
         <div class="confirm-modal" id="confirmModal">
             <div class="confirm-modal-content">
@@ -29,37 +27,31 @@ function showConfirmModal(options) {
         </div>
     `;
 
-    // Remove existing modal if any
     const existingModal = document.getElementById('confirmModal');
     if (existingModal) {
         existingModal.remove();
     }
 
-    // Add modal to body
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     const modal = document.getElementById('confirmModal');
     const confirmBtn = document.getElementById('modalConfirm');
     const cancelBtn = document.getElementById('modalCancel');
 
-    // Show modal
     modal.style.display = 'flex';
 
-    // Handle confirm
     confirmBtn.onclick = () => {
         modal.style.display = 'none';
         modal.remove();
         onConfirm();
     };
 
-    // Handle cancel
     cancelBtn.onclick = () => {
         modal.style.display = 'none';
         modal.remove();
         onCancel();
     };
 
-    // Close on background click
     modal.onclick = (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -68,7 +60,6 @@ function showConfirmModal(options) {
         }
     };
 
-    // Close on Escape key
     const escapeHandler = (e) => {
         if (e.key === 'Escape') {
             modal.style.display = 'none';

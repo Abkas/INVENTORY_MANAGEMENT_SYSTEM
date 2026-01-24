@@ -5,7 +5,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// Admin-only check
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php?error=Access Denied");
     exit();
@@ -13,7 +12,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch all users with their activity stats
 $query = "
     SELECT 
         u.*,
@@ -84,14 +82,12 @@ while ($row = mysqli_fetch_assoc($result)) {
             </div>
         <?php endif; ?>
 
-        <!-- Card View -->
         <div id="view-card" class="responsive-grid">
             <?php foreach ($users as $user): ?>
                 <?php include __DIR__ . '/components/staff_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>

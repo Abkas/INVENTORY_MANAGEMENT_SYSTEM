@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch warehouses with total stock counts
 $query = "SELECT w.*, COALESCE(s.total_stock, 0) as total_stock 
           FROM warehouse w 
           LEFT JOIN (SELECT warehouse_id, SUM(quantity) as total_stock FROM stock GROUP BY warehouse_id) s 
@@ -53,7 +52,6 @@ while ($row = mysqli_fetch_assoc($result)) {
             </div>
         </div>
 
-        <!-- Feedback Messages -->
         <?php if (isset($_SESSION['msg'])): ?>
             <div class="msg-success"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
         <?php endif; ?>
@@ -61,14 +59,12 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="msg-error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
         <?php endif; ?>
         
-        <!-- Card View -->
         <div id="view-card" class="warehouse-card-grid responsive-grid">
             <?php foreach ($warehouses as $warehouse): ?>
                 <?php include __DIR__ . '/components/warehouse_card.php'; ?>
             <?php endforeach; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -134,14 +130,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                 }
             }
             
-            // Initialize icons
             document.addEventListener('DOMContentLoaded', () => {
                 if(window.lucide) lucide.createIcons();
             });
         </script>
     </div>
 
-    <!-- Add Warehouse Modal -->
     <div id="addWarehouseModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Add Warehouse</h2>
@@ -163,7 +157,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         </div>
     </div>
 
-    <!-- Edit Warehouse Modal -->
     <div id="editWarehouseModal" class="modal-bg" style="display:none;">
         <div class="modal-content modal-content">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Edit Warehouse</h2>

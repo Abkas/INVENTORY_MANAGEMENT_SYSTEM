@@ -6,15 +6,13 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch customers
 $customers = [];
 $cus_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY customer_name ASC");
 while ($row = mysqli_fetch_assoc($cus_result)) {
     $customers[] = $row;
 }
 
-// Fetch products with their current unit price
-// Fetch products with their current unit price and total stock
+
 $products = [];
 $prod_result = mysqli_query($conn, "
     SELECT p.product_id, p.product_name, p.unit_price, COALESCE(SUM(s.quantity), 0) as total_stock 
@@ -27,7 +25,6 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
 }
 
-// Fetch sales with category information
 $sales = [];
 $sales_result = mysqli_query($conn, "
     SELECT s.*, c.customer_name, p.product_name, cat.category_name 
@@ -50,7 +47,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     <title>Sales | Inventory Manager</title>
     <link rel="stylesheet" href="css/global.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/shared_cards.css">
-    <script src="https://unpkg.com/lucide@latest"></script> <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
 </head>
 <body>
 <div class="container">
@@ -79,7 +76,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
             </div>
         </div>
 
-        <!-- Card View -->
         <div id="view-card" class="sales-card-grid responsive-grid">
             <?php foreach ($sales as $sale): ?>
                 <?php include __DIR__ . '/components/sales_card.php'; ?>
@@ -91,7 +87,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
             <?php endif; ?>
         </div>
 
-        <!-- Table View -->
         <div id="view-table" class="table-container" style="display:none;">
             <table class="premium-table">
                 <thead>
@@ -161,7 +156,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
         }
     </script>
 
-    <!-- Add Sales Modal -->
     <div id="addSalesModal" class="modal-bg">
         <div class="modal-content modal-content" style="max-width: 550px;">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Record New Sale</h2>
@@ -223,7 +217,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                         </label>
                     </div>
                     
-                    <!-- Stock Error Message Area -->
                     <div id="stock_error" style="display:none; color: #dc2626; font-size: 0.9rem; margin-top: -10px; font-weight: 500;">
                         ⚠️ Not enough stock available!
                     </div>
@@ -275,7 +268,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
         const price = parseFloat(document.getElementById('sale_unit_price').value) || 0;
         document.getElementById('sale_total_price').value = (qty * price).toFixed(2);
         
-        // Stock Validation
         const select = document.getElementById('sale_product_select');
         const selectedOption = select.options[select.selectedIndex];
         const stock = parseFloat(selectedOption.getAttribute('data-stock')) || 0;
@@ -290,7 +282,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
             btn.style.opacity = '0.5';
             btn.style.cursor = 'not-allowed';
         } else {
-            qtyInput.style.borderColor = '#e2e8f0'; // Default border
+            qtyInput.style.borderColor = '#e2e8f0'; 
             errorDiv.style.display = 'none';
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -311,7 +303,6 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
         return true;
     }
 
-    // Initialize Lucide Icons
     if (window.lucide) {
         lucide.createIcons();
     }

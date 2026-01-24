@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['purchase_date'], $_PO
         $product_id = 0;
 
         if ($is_new) {
-            // Create New Product
             $name = mysqli_real_escape_string($conn, $_POST['new_product_name']);
             $cat_id = intval($_POST['category_id']);
             $sup_id = intval($_POST['supplier_id']);
@@ -38,38 +37,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['purchase_date'], $_PO
             }
             $product_id = mysqli_insert_id($conn);
         } else {
-            // Use Existing Product
             $product_id = intval($_POST['product_id']);
             if ($product_id <= 0) {
                 throw new Exception("Please select a valid product.");
             }
             
-            // Optionally update the product's unit price to the latest purchase price
             mysqli_query($conn, "UPDATE product SET unit_price = '$unit_price' WHERE product_id = $product_id");
         }
 
 
-        // 1. Get supplier_id from the product
         $supplier_query = mysqli_query($conn, "SELECT supplier_id FROM product WHERE product_id = $product_id");
         $supplier_row = mysqli_fetch_assoc($supplier_query);
         $supplier_id = $supplier_row ? $supplier_row['supplier_id'] : null;
 
-        // 2. Insert into purchase table
         $query = "INSERT INTO purchase (purchase_date, quantity, total_price, product_id, supplier_id, user_id) 
                   VALUES ('$purchase_date', '$quantity', '$total_price', '$product_id', '$supplier_id', '$user_id')";
         if (!mysqli_query($conn, $query)) {
             throw new Exception("Could not record purchase: " . mysqli_error($conn));
         }
 
-        // 2. Update/Insert stock
-        $warehouse_result = mysqli_query($conn, "SELECT warehouse_id FROM warehouse ORDER BY warehouse_id ASC LIMIT 1");
-        $warehouse_row = mysqli_fetch_assoc($warehouse_result);
+        $warehouse_id = isset($_POST['warehouse_id']) ? intval($_POST['warehouse_id']) : 0;
         
-        if (!$warehouse_row) {
-            throw new Exception("No warehouse found. Please create a warehouse first.");
+        if ($warehouse_id <= 0) {
+            $warehouse_result = mysqli_query($conn, "SELECT warehouse_id FROM warehouse ORDER BY warehouse_id ASC LIMIT 1");
+            $warehouse_row = mysqli_fetch_assoc($warehouse_result);
+            if (!$warehouse_row) {
+                throw new Exception("No warehouse found. Please create a warehouse first.");
+            }
+            $warehouse_id = $warehouse_row['warehouse_id'];
         }
         
-        $warehouse_id = $warehouse_row['warehouse_id'];
         $stock_check = mysqli_query($conn, "SELECT stock_id, quantity FROM stock WHERE product_id = $product_id AND warehouse_id = $warehouse_id");
         
         if ($row = mysqli_fetch_assoc($stock_check)) {

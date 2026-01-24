@@ -9,7 +9,6 @@ require_once __DIR__ . '/../db/connect.php';
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     
-    // Check if customer has any sales history
     $sales_check = mysqli_query($conn, "SELECT COUNT(*) as count FROM sales WHERE customer_id = $id");
     $sales_row = mysqli_fetch_assoc($sales_check);
     

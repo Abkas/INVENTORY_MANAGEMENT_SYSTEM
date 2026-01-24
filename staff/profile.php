@@ -5,7 +5,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// Admin-only check
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../index.php?error=Access Denied");
     exit();
@@ -20,7 +19,6 @@ if (!isset($_GET['id'])) {
 
 $user_id = intval($_GET['id']);
 
-// Fetch user details
 $user_query = "SELECT * FROM user WHERE user_id = $user_id";
 $user_result = mysqli_query($conn, $user_query);
 $user = mysqli_fetch_assoc($user_result);
@@ -29,7 +27,6 @@ if (!$user) {
     die("User not found.");
 }
 
-// Fetch activity log (sales and purchases)
 $activity_query = "
     (SELECT 
         'SALE' as type,
@@ -105,7 +102,6 @@ while ($row = mysqli_fetch_assoc($activity_result)) {
         </div>
 
         <div class="responsive-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
-            <!-- Sales Stats -->
             <div class="premium-card" style="min-height: auto;">
                 <div style="display:flex; gap:16px; align-items:center;">
                     <div class="icon-box" style="margin-bottom:0; background:#dcfce7; color:#166534;">
@@ -123,7 +119,6 @@ while ($row = mysqli_fetch_assoc($activity_result)) {
                 </div>
             </div>
 
-            <!-- Purchase Stats -->
             <div class="premium-card" style="min-height: auto;">
                 <div style="display:flex; gap:16px; align-items:center;">
                     <div class="icon-box" style="margin-bottom:0; background:#fff7ed; color:#c2410c;">
