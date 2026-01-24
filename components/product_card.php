@@ -5,6 +5,9 @@
 
 <div class="premium-card">
     <div class="card-actions">
+        <a href="product/view.php?id=<?= $product['product_id'] ?>" class="action-btn" title="View Warehouse Details" style="background:#f0f9ff; color:#2563eb; text-decoration:none;">
+            <i data-lucide="eye" style="width:16px;"></i>
+        </a>
         <button class="action-btn btn-edit" title="Edit Product" onclick="openEditModal(<?= $product['product_id'] ?>, '<?= addslashes($product['product_name']) ?>', '<?= $product['unit_price'] ?>', '<?= $product['category_id'] ?>', '<?= $product['supplier_id'] ?>')">✎</button>
         <button class="action-btn btn-delete" title="Delete Product" onclick="confirmDelete(<?= $product['product_id'] ?>)">🗑</button>
     </div>

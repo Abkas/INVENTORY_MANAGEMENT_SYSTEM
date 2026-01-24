@@ -113,6 +113,9 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
                         </td>
                         <td style="text-align:right;">
                             <div style="display:inline-flex; gap:8px;">
+                                <a href="product/view.php?id=<?= $product['product_id'] ?>" class="action-btn" title="View Warehouse Details" style="background:#f0f9ff; color:#2563eb; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; text-decoration:none;">
+                                    <i data-lucide="eye" style="width:16px;"></i>
+                                </a>
                                 <button class="action-btn" title="Edit" onclick="openEditModal(<?= $product['product_id'] ?>, '<?= addslashes($product['product_name']) ?>', '<?= $product['unit_price'] ?>', '<?= $product['category_id'] ?>', '<?= $product['supplier_id'] ?>')" style="background:#eff6ff; color:#2563eb; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                                     <i data-lucide="edit-2" style="width:16px;"></i>
                                 </button>

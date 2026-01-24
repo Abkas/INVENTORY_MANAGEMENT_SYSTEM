@@ -78,7 +78,6 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                         <th style="width: 40%;">Product</th>
                         <th style="width: 30%;">Warehouse</th>
                         <th style="text-align:right;">Quantity</th>
-                        <th style="width: 50px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,10 +97,6 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                                 <?= number_format($stock['quantity']) ?>
                             </span>
                         </td>
-                        <td style="text-align: right;">
-                             <a href="product/view.php?id=<?= $stock['product_id'] ?>" style="color: #64748b; display: inline-flex; align-items: center; justify-content: center;" title="View Details">
-                                <i data-lucide="eye" style="width: 18px;"></i>
-                            </a>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
