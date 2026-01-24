@@ -1,5 +1,7 @@
 <!-- Sidebar Navigation Component (HTML/CSS) -->
 <link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/sidebar.css">
+<link rel="stylesheet" href="/INVENTORY_SYSTEM/BACKEND/css/confirm_modal.css">
+<script src="/INVENTORY_SYSTEM/BACKEND/js/confirm_modal.js"></script>
 <div class="sidebar-navbar-mobile" id="sidebarNavbarMobile">
   <button class="hamburger" id="sidebarHamburger" aria-label="Open sidebar" onclick="document.querySelector('.sidebar').classList.toggle('sidebar-open')">&#9776;</button>
   <span class="sidebar-navbar-title">Inventory Management</span>
@@ -26,11 +28,34 @@
     <a href="/INVENTORY_SYSTEM/BACKEND/stock.php" class="sidebar-link">📊 Stock</a>
     <a href="/INVENTORY_SYSTEM/BACKEND/warehouses.php" class="sidebar-link">🏢 Warehouses</a>
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+    <a href="/INVENTORY_SYSTEM/BACKEND/staff.php" class="sidebar-link">👥 Manage Staff</a>
     <a href="/INVENTORY_SYSTEM/BACKEND/reports.php" class="sidebar-link">📈 Reports</a>
     <?php endif; ?>
-    <a href="/INVENTORY_SYSTEM/BACKEND/user/logout.php" class="sidebar-link" style="margin-top:auto; color:#ef4444; background: #fef2f2; font-weight:600;">🚪 Logout</a>
+    <a href="#" onclick="event.preventDefault(); confirmLogout();" class="sidebar-link" style="margin-top:auto; color:#ef4444; background: #fef2f2; font-weight:600;">🚪 Logout</a>
   </nav>
 </aside>
+<script>
+function confirmLogout() {
+    if (typeof showConfirmModal === 'function') {
+        showConfirmModal({
+            title: 'Logout Confirmation',
+            message: 'Are you sure you want to logout? Any unsaved changes will be lost.',
+            icon: '🚪',
+            iconType: 'warning',
+            confirmText: 'Yes, Logout',
+            confirmClass: 'logout',
+            onConfirm: () => {
+                window.location.href = '/INVENTORY_SYSTEM/BACKEND/user/logout.php';
+            }
+        });
+    } else {
+        // Fallback to standard confirm if modal not loaded
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/INVENTORY_SYSTEM/BACKEND/user/logout.php';
+        }
+    }
+}
+</script>
 <script>
 const sidebar = document.querySelector('.sidebar');
 const hamburger = document.getElementById('sidebarHamburger');

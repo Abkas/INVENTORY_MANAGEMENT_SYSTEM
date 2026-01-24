@@ -194,9 +194,17 @@ while ($row = mysqli_fetch_assoc($result)) {
         document.getElementById('editCustomerModal').style.display = 'flex';
     }
     function confirmDelete(id) {
-        if (confirm('Are you sure you want to delete this customer?')) {
-            window.location.href = 'customer/delete.php?id=' + id;
-        }
+        showConfirmModal({
+            title: 'Delete Customer?',
+            message: 'Are you sure you want to delete this customer? Their purchase history will be affected.',
+            icon: '🗑️',
+            iconType: 'danger',
+            confirmText: 'Yes, Delete',
+            confirmClass: 'confirm',
+            onConfirm: () => {
+                window.location.href = 'customer/delete.php?id=' + id;
+            }
+        });
     }
     </script>
 </div>

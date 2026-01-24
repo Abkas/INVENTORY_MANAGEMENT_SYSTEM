@@ -194,9 +194,17 @@ while ($row = mysqli_fetch_assoc($result)) {
         document.getElementById('editWarehouseModal').style.display = 'flex';
     }
     function confirmDelete(id) {
-        if (confirm('Are you sure you want to delete this warehouse? All stock associations must be empty.')) {
-            window.location.href = 'warehouse/delete.php?id=' + id;
-        }
+        showConfirmModal({
+            title: 'Delete Warehouse?',
+            message: 'Are you sure you want to delete this warehouse? This action cannot be undone.',
+            icon: '🗑️',
+            iconType: 'danger',
+            confirmText: 'Yes, Delete',
+            confirmClass: 'confirm',
+            onConfirm: () => {
+                window.location.href = 'warehouse/delete.php?id=' + id;
+            }
+        });
     }
     </script>
 </div>

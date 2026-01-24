@@ -157,11 +157,13 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                                         p.product_name as item,
                                         cat.category_name as category,
                                         s.quantity,
-                                        s.total_price as amount
+                                        s.total_price as amount,
+                                        u.username as staff_name
                                     FROM sales s 
                                     JOIN product p ON s.product_id = p.product_id 
                                     JOIN customer c ON s.customer_id = c.customer_id 
-                                    JOIN category cat ON p.category_id = cat.category_id)
+                                    JOIN category cat ON p.category_id = cat.category_id
+                                    LEFT JOIN user u ON s.user_id = u.user_id)
                                     
                                     UNION ALL
                                     
@@ -172,11 +174,13 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                                         p.product_name as item,
                                         cat.category_name as category,
                                         pur.quantity,
-                                        pur.total_price as amount
+                                        pur.total_price as amount,
+                                        u.username as staff_name
                                     FROM purchase pur
                                     JOIN product p ON pur.product_id = p.product_id 
                                     JOIN supplier sup ON pur.supplier_id = sup.supplier_id 
-                                    JOIN category cat ON p.category_id = cat.category_id)
+                                    JOIN category cat ON p.category_id = cat.category_id
+                                    LEFT JOIN user u ON pur.user_id = u.user_id)
                                     
                                     ORDER BY date DESC LIMIT 20
                                 ");
@@ -190,6 +194,12 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                                         <div style="font-size:0.75rem; color:var(--text-sub); font-weight:400; margin-top:2px;">
                                             <?= $is_sale ? 'Customer' : 'Supplier' ?>
                                         </div>
+                                        <?php if (!empty($row['staff_name'])): ?>
+                                        <div style="font-size:0.7rem; color:#6366f1; font-weight:500; margin-top:4px; display:inline-flex; align-items:center; gap:4px;">
+                                            <i data-lucide="user" style="width:10px;"></i>
+                                            <?= htmlspecialchars($row['staff_name']) ?>
+                                        </div>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <?= htmlspecialchars($row['item']) ?> 

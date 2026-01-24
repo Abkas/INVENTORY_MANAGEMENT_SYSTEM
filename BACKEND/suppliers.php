@@ -191,9 +191,17 @@ while ($row = mysqli_fetch_assoc($result)) {
         document.getElementById('editSupplierModal').style.display = 'flex';
     }
     function confirmDelete(id) {
-        if (confirm('Are you sure you want to delete this supplier?')) {
-            window.location.href = 'supplier/delete.php?id=' + id;
-        }
+        showConfirmModal({
+            title: 'Delete Supplier?',
+            message: 'Are you sure you want to delete this supplier? Products from this supplier will be affected.',
+            icon: '🗑️',
+            iconType: 'danger',
+            confirmText: 'Yes, Delete',
+            confirmClass: 'confirm',
+            onConfirm: () => {
+                window.location.href = 'supplier/delete.php?id=' + id;
+            }
+        });
     }
     </script>
 </div>
