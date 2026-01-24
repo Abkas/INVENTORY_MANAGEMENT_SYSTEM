@@ -150,27 +150,65 @@ while($row = mysqli_fetch_assoc($low_stock_query)) {
                             <tbody>
                                 <?php 
                                 $activity = mysqli_query($conn, "
-                                    SELECT s.*, p.product_name, c.customer_name, cat.category_name 
+                                    (SELECT 
+                                        'SALE' as type,
+                                        s.sales_date as date,
+                                        c.customer_name as name,
+                                        p.product_name as item,
+                                        cat.category_name as category,
+                                        s.quantity,
+                                        s.total_price as amount
                                     FROM sales s 
                                     JOIN product p ON s.product_id = p.product_id 
                                     JOIN customer c ON s.customer_id = c.customer_id 
-                                    JOIN category cat ON p.category_id = cat.category_id 
-                                    ORDER BY s.sales_id DESC LIMIT 10
+                                    JOIN category cat ON p.category_id = cat.category_id)
+                                    
+                                    UNION ALL
+                                    
+                                    (SELECT 
+                                        'PURCHASE' as type,
+                                        pur.purchase_date as date,
+                                        sup.supplier_name as name,
+                                        p.product_name as item,
+                                        cat.category_name as category,
+                                        pur.quantity,
+                                        pur.total_price as amount
+                                    FROM purchase pur
+                                    JOIN product p ON pur.product_id = p.product_id 
+                                    JOIN supplier sup ON pur.supplier_id = sup.supplier_id 
+                                    JOIN category cat ON p.category_id = cat.category_id)
+                                    
+                                    ORDER BY date DESC LIMIT 20
                                 ");
-                                while($row = mysqli_fetch_assoc($activity)): ?>
+                                while($row = mysqli_fetch_assoc($activity)): 
+                                    $is_sale = $row['type'] === 'SALE';
+                                ?>
                                 <tr>
-                                    <td style="color: var(--secondary);"><?= date('M d, H:i', strtotime($row['sales_date'])) ?></td>
-                                    <td style="font-weight: 600;"><?= htmlspecialchars($row['customer_name']) ?></td>
+                                    <td style="color: var(--secondary);"><?= date('M d', strtotime($row['date'])) ?></td>
+                                    <td style="font-weight: 600;">
+                                        <?= htmlspecialchars($row['name']) ?>
+                                        <div style="font-size:0.75rem; color:var(--text-sub); font-weight:400; margin-top:2px;">
+                                            <?= $is_sale ? 'Customer' : 'Supplier' ?>
+                                        </div>
+                                    </td>
                                     <td>
-                                        <?= htmlspecialchars($row['product_name']) ?> 
+                                        <?= htmlspecialchars($row['item']) ?> 
                                         <small style="color:var(--secondary);">(Qty: <?= $row['quantity'] ?>)</small>
                                         <br>
-                                        <small style="background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; display: inline-block; margin-top: 4px;">
-                                            📁 <?= htmlspecialchars($row['category_name']) ?>
+                                        <small style="background: #f1f5f9; color: #475569; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; display: inline-block; margin-top: 4px;">
+                                            <?= htmlspecialchars($row['category']) ?>
                                         </small>
                                     </td>
-                                    <td><span style="background:#ecfdf5; color:#059669; padding:0.25rem 0.5rem; border-radius:4px; font-size:0.7rem; font-weight:700;">SALE</span></td>
-                                    <td style="text-align: right; font-weight: 700; color: var(--success);">रु <?= number_format($row['total_price'], 2) ?></td>
+                                    <td>
+                                        <?php if($is_sale): ?>
+                                            <span style="background:#ecfdf5; color:#059669; padding:0.25rem 0.5rem; border-radius:4px; font-size:0.7rem; font-weight:700;">SALE</span>
+                                        <?php else: ?>
+                                            <span style="background:#fff7ed; color:#c2410c; padding:0.25rem 0.5rem; border-radius:4px; font-size:0.7rem; font-weight:700;">PURCHASE</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="text-align: right; font-weight: 700; color: <?= $is_sale ? 'var(--success)' : 'var(--danger)' ?>;">
+                                        <?= $is_sale ? '+' : '-' ?> रु <?= number_format($row['amount'], 2) ?>
+                                    </td>
                                 </tr>
                                 <?php endwhile; ?>
                             </tbody>

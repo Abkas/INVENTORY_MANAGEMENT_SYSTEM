@@ -5,10 +5,16 @@ require_once __DIR__ . '/../AUTH/auth.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? 'staff'; // Default to staff
 
     if ($username === '' || $password === '') {
         header("Location: /INVENTORY_SYSTEM/BACKEND/user/register.php?error=Username and password are required.");
         exit();
+    }
+    
+    // Validate role
+    if (!in_array($role, ['admin', 'staff'])) {
+        $role = 'staff';
     }
 
     // Check if user exists
@@ -20,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $password = hashPassword($password);
     $result = mysqli_query($conn,
-        "INSERT INTO user (username, password)
-         VALUES ('$username', '$password')"
+        "INSERT INTO user (username, password, role)
+         VALUES ('$username', '$password', '$role')"
     );
     if (!$result) {
         header("Location: /INVENTORY_SYSTEM/BACKEND/user/register.php?error=Registration failed. Please try again.");
@@ -66,6 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="input-group">
                     <label>Create Password</label>
                     <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <label>Select Role</label>
+                    <select name="role" style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-size: 1rem; color: #334155; background-color: #f8fafc;">
+                        <option value="staff">Staff (Restricted Access)</option>
+                        <option value="admin">Admin (Full Access)</option>
+                    </select>
                 </div>
                 <button type="submit">Create Account</button>
             </form>

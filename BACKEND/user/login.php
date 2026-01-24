@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && verifyPassword($password, $user['password'])) {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['user'] = $user['username'];
+        $_SESSION['role'] = $user['role']; // Store role in session
         header("Location: /INVENTORY_SYSTEM/BACKEND/index.php");
         exit;
     } else {

@@ -90,12 +90,17 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </td>
                         <td style="text-align:right;">
                             <div style="display:inline-flex; gap:8px;">
+                                <a href="customer/profile.php?id=<?= $customer['customer_id'] ?>" class="action-btn" title="View Profile" style="background:#f0fdf4; color:#166534; text-decoration:none;">
+                                    <i data-lucide="eye" style="width:16px;"></i>
+                                </a>
                                 <button class="action-btn" title="Edit" onclick="openEditModal(<?= $customer['customer_id'] ?>, '<?= addslashes($customer['customer_name']) ?>', '<?= addslashes($customer['customer_email']) ?>', '<?= addslashes($customer['customer_phone']) ?>')" style="background:#eff6ff; color:#2563eb; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                                     <i data-lucide="edit-2" style="width:16px;"></i>
                                 </button>
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                                 <button class="action-btn" title="Delete" onclick="confirmDelete(<?= $customer['customer_id'] ?>)" style="background:#fee2e2; color:#dc2626; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                                     <i data-lucide="trash-2" style="width:16px;"></i>
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

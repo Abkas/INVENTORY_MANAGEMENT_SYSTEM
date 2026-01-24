@@ -93,9 +93,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 <button class="action-btn" title="Edit" onclick="openEditModal(<?= $category['category_id'] ?>, '<?= addslashes($category['category_name']) ?>')" style="background:#eff6ff; color:#2563eb; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                                     <i data-lucide="edit-2" style="width:16px;"></i>
                                 </button>
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                                 <button class="action-btn" title="Delete" onclick="confirmDelete(<?= $category['category_id'] ?>)" style="background:#fee2e2; color:#dc2626; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                                     <i data-lucide="trash-2" style="width:16px;"></i>
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
