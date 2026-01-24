@@ -48,9 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['purchase_date'], $_PO
             mysqli_query($conn, "UPDATE product SET unit_price = '$unit_price' WHERE product_id = $product_id");
         }
 
-        // 1. Insert into purchase table
-        $query = "INSERT INTO purchase (purchase_date, quantity, total_price, product_id, user_id) 
-                  VALUES ('$purchase_date', '$quantity', '$total_price', '$product_id', '$user_id')";
+
+        // 1. Get supplier_id from the product
+        $supplier_query = mysqli_query($conn, "SELECT supplier_id FROM product WHERE product_id = $product_id");
+        $supplier_row = mysqli_fetch_assoc($supplier_query);
+        $supplier_id = $supplier_row ? $supplier_row['supplier_id'] : null;
+
+        // 2. Insert into purchase table
+        $query = "INSERT INTO purchase (purchase_date, quantity, total_price, product_id, supplier_id, user_id) 
+                  VALUES ('$purchase_date', '$quantity', '$total_price', '$product_id', '$supplier_id', '$user_id')";
         if (!mysqli_query($conn, $query)) {
             throw new Exception("Could not record purchase: " . mysqli_error($conn));
         }
