@@ -21,10 +21,13 @@ while ($row = mysqli_fetch_assoc($result)) {
     <title>Customers</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/shared_cards.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="container">
     <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <?php include __DIR__ . '/components/toast_notifications.php'; ?>
+    
     <div class="main-content">
         <div class="header">
             <div>

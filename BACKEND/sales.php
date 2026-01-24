@@ -14,8 +14,15 @@ while ($row = mysqli_fetch_assoc($cus_result)) {
 }
 
 // Fetch products with their current unit price
+// Fetch products with their current unit price and total stock
 $products = [];
-$prod_result = mysqli_query($conn, "SELECT product_id, product_name, unit_price FROM product ORDER BY product_name ASC");
+$prod_result = mysqli_query($conn, "
+    SELECT p.product_id, p.product_name, p.unit_price, COALESCE(SUM(s.quantity), 0) as total_stock 
+    FROM product p 
+    LEFT JOIN stock s ON p.product_id = s.product_id 
+    GROUP BY p.product_id 
+    ORDER BY p.product_name ASC
+");
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;
 }
@@ -43,10 +50,12 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     <title>Sales | Inventory Manager</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/shared_cards.css">
+    <script src="https://unpkg.com/lucide@latest"></script> <!-- Icons -->
 </head>
 <body>
 <div class="container">
     <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <?php include __DIR__ . '/components/toast_notifications.php'; ?>
     
     <div class="main-content">
         <div class="header">
@@ -72,7 +81,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     <div id="addSalesModal" class="modal-bg">
         <div class="modal-content modal-content" style="max-width: 550px;">
             <h2 style="margin-top:0;font-size:1.6rem;font-weight:700;letter-spacing:-1px;color:#23272f;">Record New Sale</h2>
-            <form method="POST" action="sales/add.php">
+            <form method="POST" action="sales/add.php" onsubmit="return validateStock()">
                 <div class="modal-fields modal-fields">
                     <label class="modal-label">Sale Date
                         <input type="date" name="sales_date" value="<?= date('Y-m-d') ?>" required>
@@ -114,8 +123,8 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                         <select name="product_id" id="sale_product_select" required onchange="updatePrice()">
                             <option value="">-- Select Product --</option>
                             <?php foreach ($products as $prod): ?>
-                                <option value="<?= $prod['product_id'] ?>" data-price="<?= $prod['unit_price'] ?>">
-                                    <?= htmlspecialchars($prod['product_name']) ?> (रु <?= number_format($prod['unit_price'], 2) ?>)
+                                <option value="<?= $prod['product_id'] ?>" data-price="<?= $prod['unit_price'] ?>" data-stock="<?= $prod['total_stock'] ?>">
+                                    <?= htmlspecialchars($prod['product_name']) ?> (Stk: <?= $prod['total_stock'] ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -129,6 +138,11 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                             <input type="number" id="sale_unit_price" placeholder="0.00" step="0.01" readonly style="background: #f1f5f9;">
                         </label>
                     </div>
+                    
+                    <!-- Stock Error Message Area -->
+                    <div id="stock_error" style="display:none; color: #dc2626; font-size: 0.9rem; margin-top: -10px; font-weight: 500;">
+                        ⚠️ Not enough stock available!
+                    </div>
 
                     <label class="modal-label">Total Sale Amount (रु)
                         <input type="number" name="total_price" id="sale_total_price" placeholder="0.00" step="0.01" readonly required style="background: #f1f5f9; font-weight: bold; color: #059669; font-size: 1.2rem;">
@@ -136,7 +150,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
 
                     <div class="modal-actions modal-actions">
                         <button type="button" class="modal-cancel modal-cancel" onclick="document.getElementById('addSalesModal').style.display='none'">Cancel</button>
-                        <button type="submit" class="add-btn add-btn">Complete Sale</button>
+                        <button type="submit" id="complete_sale_btn" class="add-btn add-btn">Complete Sale</button>
                     </div>
                 </div>
             </form>
@@ -172,9 +186,45 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     }
 
     function calculateSaleTotal() {
-        const qty = document.getElementById('sale_quantity').value || 0;
-        const price = document.getElementById('sale_unit_price').value || 0;
+        const qtyInput = document.getElementById('sale_quantity');
+        const qty = parseFloat(qtyInput.value) || 0;
+        const price = parseFloat(document.getElementById('sale_unit_price').value) || 0;
         document.getElementById('sale_total_price').value = (qty * price).toFixed(2);
+        
+        // Stock Validation
+        const select = document.getElementById('sale_product_select');
+        const selectedOption = select.options[select.selectedIndex];
+        const stock = parseFloat(selectedOption.getAttribute('data-stock')) || 0;
+        const errorDiv = document.getElementById('stock_error');
+        const btn = document.getElementById('complete_sale_btn');
+
+        if (qty > stock) {
+            qtyInput.style.borderColor = '#dc2626';
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = `⚠️ Only ${stock} items available in stock!`;
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+        } else {
+            qtyInput.style.borderColor = '#e2e8f0'; // Default border
+            errorDiv.style.display = 'none';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        }
+    }
+    
+    function validateStock() {
+        const qty = parseFloat(document.getElementById('sale_quantity').value) || 0;
+        const select = document.getElementById('sale_product_select');
+        const selectedOption = select.options[select.selectedIndex];
+        const stock = parseFloat(selectedOption.getAttribute('data-stock')) || 0;
+        
+        if (qty > stock) {
+             alert("Cannot sell more than available stock!");
+             return false;
+        }
+        return true;
     }
 </script>
 

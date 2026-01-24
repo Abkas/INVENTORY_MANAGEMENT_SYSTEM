@@ -46,10 +46,12 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
     <title>Purchases</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/shared_cards.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="container">
     <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <?php include __DIR__ . '/components/toast_notifications.php'; ?>
     <div class="main-content">
         <div class="header">
             <div>
@@ -58,10 +60,6 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
             </div>
             <button class="add-btn" onclick="document.getElementById('addPurchaseModal').style.display='flex'">Add Purchase</button>
         </div>
-
-        <?php if (!empty($error)): ?>
-            <div class="msg-error"><?= $error; ?></div>
-        <?php endif; ?>
         <div class="purchase-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:25px;">
             <?php foreach ($purchases as $purchase): ?>
                 <?php include __DIR__ . '/components/purchase_card.php'; ?>

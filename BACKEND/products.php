@@ -42,10 +42,12 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
     <title>Products</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/shared_cards.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="container">
     <?php include __DIR__ . '/components/sidebar.php'; ?>
+    <?php include __DIR__ . '/components/toast_notifications.php'; ?>
 
     <div class="main-content">
         <div class="header">
@@ -55,10 +57,6 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
             </div>
             <button class="add-btn" onclick="document.getElementById('addProductModal').style.display='flex'">Add Product</button>
         </div>
-
-        <?php if (isset($_SESSION['msg'])): ?>
-            <div class="msg-success"><?= $_SESSION['msg']; unset($_SESSION['msg']); ?></div>
-        <?php endif; ?>
 
         <!-- Product Card Grid -->
         <div class="product-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:25px;">
