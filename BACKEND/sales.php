@@ -48,7 +48,7 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales | Inventory Manager</title>
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/shared_cards.css">
     <script src="https://unpkg.com/lucide@latest"></script> <!-- Icons -->
 </head>
@@ -63,9 +63,24 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                 <div class="header-title">Sales</div>
                 <div class="header-sub">Record and track customer sales</div>
             </div>
-            <button class="add-btn" onclick="document.getElementById('addSalesModal').style.display='flex'">New Sale</button>
+            <div style="display:flex; gap:16px; align-items: center;">
+                <div class="segment-group">
+                    <button class="segment-btn active" onclick="toggleView('card')" id="btn-card" title="Grid View">
+                        <i data-lucide="layout-grid" style="width:18px;"></i>
+                    </button>
+                    <div style="width:1px; background:#e2e8f0; margin:4px 0;"></div>
+                    <button class="segment-btn" onclick="toggleView('table')" id="btn-table" title="Table View">
+                        <i data-lucide="table" style="width:18px;"></i>
+                    </button>
+                </div>
+                <button class="add-btn" onclick="document.getElementById('addSalesModal').style.display='flex'">
+                    <i data-lucide="plus" style="width:18px;"></i> New Sale
+                </button>
+            </div>
         </div>
-        <div class="sales-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:25px;">
+
+        <!-- Card View -->
+        <div id="view-card" class="sales-card-grid responsive-grid">
             <?php foreach ($sales as $sale): ?>
                 <?php include __DIR__ . '/components/sales_card.php'; ?>
             <?php endforeach; ?>
@@ -75,7 +90,76 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
                 </p>
             <?php endif; ?>
         </div>
+
+        <!-- Table View -->
+        <div id="view-table" class="table-container" style="display:none;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th class="col-hide-mobile">Date</th>
+                        <th>Product</th>
+                        <th>Customer</th>
+                        <th style="text-align:right;">Qty</th>
+                        <th style="text-align:right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($sales as $sale): ?>
+                    <tr>
+                        <td class="col-hide-mobile" style="color:var(--text-sub); font-weight:500;"><?= date('M d, Y', strtotime($sale['sales_date'])) ?></td>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-main);"><?= htmlspecialchars($sale['product_name']) ?></div>
+                            <div style="font-size:0.8rem; color:var(--text-sub); margin-top:2px; display:flex; align-items:center; gap:4px;">
+                                <span style="display:inline-block; width:6px; height:6px; background:#cbd5e1; border-radius:50%;"></span>
+                                <?= htmlspecialchars($sale['category_name']) ?>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div style="width:32px; height:32px; background:#eff6ff; color:#2563eb; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8rem;">
+                                    <?= strtoupper(substr($sale['customer_name'], 0, 1)) ?>
+                                </div>
+                                <span style="font-weight:500;"><?= htmlspecialchars($sale['customer_name']) ?></span>
+                            </div>
+                        </td>
+                        <td style="text-align:right; font-weight:600; color:var(--text-main);"><?= $sale['quantity'] ?></td>
+                        <td style="text-align:right;">
+                            <span style="background:#ecfdf5; color:#059669; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.9rem; white-space: nowrap;">
+                                रु <?= number_format($sale['total_price'], 2) ?>
+                            </span>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($sales)): ?>
+                    <tr><td colspan="5" style="padding:3rem; text-align:center; color:var(--text-sub);">No records found</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+    
+    <script>
+        function toggleView(view) {
+            const cardView = document.getElementById('view-card');
+            const tableView = document.getElementById('view-table');
+            const btnCard = document.getElementById('btn-card');
+            const btnTable = document.getElementById('btn-table');
+
+            if (view === 'card') {
+                cardView.style.display = 'grid';
+                tableView.style.display = 'none';
+                
+                btnCard.classList.add('active');
+                btnTable.classList.remove('active');
+            } else {
+                cardView.style.display = 'none';
+                tableView.style.display = 'block';
+                
+                btnTable.classList.add('active');
+                btnCard.classList.remove('active');
+            }
+        }
+    </script>
 
     <!-- Add Sales Modal -->
     <div id="addSalesModal" class="modal-bg">
@@ -225,6 +309,11 @@ while ($row = mysqli_fetch_assoc($sales_result)) {
              return false;
         }
         return true;
+    }
+
+    // Initialize Lucide Icons
+    if (window.lucide) {
+        lucide.createIcons();
     }
 </script>
 

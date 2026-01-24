@@ -42,6 +42,7 @@ body {
     align-items: center;
     margin-bottom: 2.5rem;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .header-title {
@@ -72,6 +73,7 @@ body {
     align-items: center;
     gap: 0.5rem;
     box-shadow: var(--shadow-sm);
+    white-space: nowrap;
 }
 
 .add-btn:hover {
@@ -80,7 +82,96 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Modal System (Premium) */
+/* Segmented Control */
+.segment-group {
+    display: inline-flex;
+    background: white;
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.segment-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: var(--text-sub);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.segment-btn:hover {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
+
+.segment-btn.active {
+    background: #f1f5f9;
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Grid Class */
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Table Container */
+.table-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+/* Premium Table Styles */
+.premium-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.premium-table th {
+    background: #f8fafc;
+    color: var(--text-sub);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.premium-table td {
+    padding: 1.25rem 1.5rem;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    transition: background 0.1s;
+}
+
+.premium-table tr:last-child td {
+    border-bottom: none;
+}
+
+.premium-table tr:hover td {
+    background: #f8fafc;
+}
+
+/* Modal System */
 .modal-bg {
     display: none;
     position: fixed;
@@ -190,12 +281,13 @@ body {
     cursor: pointer;
 }
 
-/* Responsiveness overrides for the main layout */
+/* Responsiveness */
 @media (max-width: 900px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
         margin-bottom: 2rem;
+        gap: 1.5rem;
     }
 
     .add-btn {
@@ -211,6 +303,28 @@ body {
 
     .modal-content {
         padding: 1.5rem;
+    }
+
+    .responsive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Table Tweaks for Mobile */
+    .premium-table th,
+    .premium-table td {
+        padding: 1rem 0.75rem;
+        font-size: 0.85rem;
+        white-space: normal;
+        /* Allow wrapping */
+    }
+
+    .premium-table th {
+        font-size: 0.75rem;
+    }
+
+    /* Hide less important columns on mobile if specific classes are used */
+    .col-hide-mobile {
+        display: none;
     }
 }
 

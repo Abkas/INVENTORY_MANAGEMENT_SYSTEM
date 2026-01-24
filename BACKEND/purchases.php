@@ -44,7 +44,7 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Purchases</title>
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/shared_cards.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -58,14 +58,98 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
                 <div class="header-title">Purchases</div>
                 <div class="header-sub">Manage your purchase records</div>
             </div>
-            <button class="add-btn" onclick="document.getElementById('addPurchaseModal').style.display='flex'">Add Purchase</button>
+            <div style="display:flex; gap:16px; align-items: center;">
+                <div class="segment-group">
+                    <button class="segment-btn active" onclick="toggleView('card')" id="btn-card" title="Grid View">
+                        <i data-lucide="layout-grid" style="width:18px;"></i>
+                    </button>
+                    <div style="width:1px; background:#e2e8f0; margin:4px 0;"></div>
+                    <button class="segment-btn" onclick="toggleView('table')" id="btn-table" title="Table View">
+                        <i data-lucide="table" style="width:18px;"></i>
+                    </button>
+                </div>
+                <button class="add-btn" onclick="document.getElementById('addPurchaseModal').style.display='flex'">
+                    <i data-lucide="plus" style="width:18px;"></i> Add Purchase
+                </button>
+            </div>
         </div>
-        <div class="purchase-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:25px;">
+
+        <!-- Card View -->
+        <div id="view-card" class="purchase-card-grid responsive-grid">
             <?php foreach ($purchases as $purchase): ?>
                 <?php include __DIR__ . '/components/purchase_card.php'; ?>
             <?php endforeach; ?>
         </div>
+
+        <!-- Table View -->
+        <div id="view-table" class="table-container" style="display:none;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th class="col-hide-mobile">Date</th>
+                        <th>Product</th>
+                        <th>Supplier</th>
+                        <th style="text-align:right;">Qty</th>
+                        <th style="text-align:right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($purchases as $purchase): ?>
+                    <tr>
+                        <td class="col-hide-mobile" style="color:var(--text-sub); font-weight:500;"><?= date('M d, Y', strtotime($purchase['purchase_date'])) ?></td>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-main);"><?= htmlspecialchars($purchase['product_name']) ?></div>
+                        </td>
+                        <td>
+                            <?php if (!empty($purchase['supplier_name'])): ?>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="width:32px; height:32px; background:#f0fdf4; color:#166534; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8rem;">
+                                        <?= strtoupper(substr($purchase['supplier_name'], 0, 1)) ?>
+                                    </div>
+                                    <span style="font-weight:500;"><?= htmlspecialchars($purchase['supplier_name']) ?></span>
+                                </div>
+                            <?php else: ?>
+                                <span style="color:#94a3b8; font-style:italic;">N/A</span>
+                            <?php endif; ?>
+                        </td>
+                        <td style="text-align:right; font-weight:600; color:var(--text-main);"><?= $purchase['quantity'] ?></td>
+                        <td style="text-align:right;">
+                            <span style="background:#fee2e2; color:#991b1b; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.9rem; white-space: nowrap;">
+                                रु <?= number_format($purchase['total_price'], 2) ?>
+                            </span>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($purchases)): ?>
+                    <tr><td colspan="5" style="padding:3rem; text-align:center; color:var(--text-sub);">No records found</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script>
+        function toggleView(view) {
+            const cardView = document.getElementById('view-card');
+            const tableView = document.getElementById('view-table');
+            const btnCard = document.getElementById('btn-card');
+            const btnTable = document.getElementById('btn-table');
+
+            if (view === 'card') {
+                cardView.style.display = 'grid';
+                tableView.style.display = 'none';
+                
+                btnCard.classList.add('active');
+                btnTable.classList.remove('active');
+            } else {
+                cardView.style.display = 'none';
+                tableView.style.display = 'block';
+                
+                btnTable.classList.add('active');
+                btnCard.classList.remove('active');
+            }
+        }
+    </script>
 
     <!-- Add Purchase Modal -->
     <div id="addPurchaseModal" class="modal-bg">
@@ -168,6 +252,11 @@ while ($row = mysqli_fetch_assoc($pur_result)) {
         const qty = document.querySelector('input[name="quantity"]').value || 0;
         const price = document.getElementById('unit_price').value || 0;
         document.getElementById('total_price_input').value = (qty * price).toFixed(2);
+    }
+
+    // Initialize Lucide Icons
+    if (window.lucide) {
+        lucide.createIcons();
     }
 </script>
 </body>

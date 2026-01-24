@@ -29,7 +29,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categories</title>
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/shared_cards.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
