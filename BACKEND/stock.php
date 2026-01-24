@@ -42,8 +42,9 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock</title>
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/shared_cards.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="container">
@@ -54,13 +55,85 @@ while ($row = mysqli_fetch_assoc($stock_result)) {
                 <div class="header-title">Stock</div>
                 <div class="header-sub">Manage your stock records</div>
             </div>
-            <button class="add-btn" onclick="document.getElementById('addStockModal').style.display='flex'">Add Stock</button>
+            <div style="display:flex; gap:16px; align-items: center;">
+                <div class="segment-group">
+                    <button class="segment-btn active" onclick="toggleView('card')" id="btn-card" title="Grid View">
+                        <i data-lucide="layout-grid" style="width:18px;"></i>
+                    </button>
+                    <div style="width:1px; background:#e2e8f0; margin:4px 0;"></div>
+                    <button class="segment-btn" onclick="toggleView('table')" id="btn-table" title="Table View">
+                        <i data-lucide="table" style="width:18px;"></i>
+                    </button>
+                </div>
+                <button class="add-btn" onclick="document.getElementById('addStockModal').style.display='flex'">Add Stock</button>
+            </div>
         </div>
-        <div class="stock-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:25px;">
+        
+        <!-- Card View -->
+        <div id="view-card" class="stock-card-grid responsive-grid">
             <?php foreach ($stocks as $stock): ?>
                 <?php include __DIR__ . '/components/stock_card.php'; ?>
             <?php endforeach; ?>
         </div>
+
+        <!-- Table View -->
+        <div id="view-table" class="table-container" style="display:none;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Product</th>
+                        <th style="width: 30%;">Warehouse</th>
+                        <th style="text-align:right;">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($stocks as $stock): ?>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-main);"><?= htmlspecialchars($stock['product_name']) ?></div>
+                        </td>
+                        <td>
+                            <div style="color:var(--text-sub); display:flex; align-items:center; gap:6px;">
+                                <i data-lucide="map-pin" style="width:14px;"></i>
+                                <?= htmlspecialchars($stock['warehouse_name']) ?>
+                            </div>
+                        </td>
+                        <td style="text-align:right;">
+                            <span style="background:#f0f9ff; color:#0369a1; padding:4px 10px; border-radius:6px; font-weight:700; font-size:0.9rem;">
+                                <?= number_format($stock['quantity']) ?>
+                            </span>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            function toggleView(view) {
+                const cardView = document.getElementById('view-card');
+                const tableView = document.getElementById('view-table');
+                const btnCard = document.getElementById('btn-card');
+                const btnTable = document.getElementById('btn-table');
+
+                if (view === 'card') {
+                    cardView.style.display = 'grid';
+                    tableView.style.display = 'none';
+                    btnCard.classList.add('active');
+                    btnTable.classList.remove('active');
+                } else {
+                    cardView.style.display = 'none';
+                    tableView.style.display = 'block';
+                    btnTable.classList.add('active');
+                    btnCard.classList.remove('active');
+                }
+            }
+            
+            // Initialize icons
+            document.addEventListener('DOMContentLoaded', () => {
+                if(window.lucide) lucide.createIcons();
+            });
+        </script>
     </div>
 
     <!-- Add Stock Modal -->

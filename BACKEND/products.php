@@ -55,15 +55,108 @@ while ($row = mysqli_fetch_assoc($prod_result)) {
                 <div class="header-title">Products</div>
                 <div class="header-sub">Manage your product catalog</div>
             </div>
-            <button class="add-btn" onclick="document.getElementById('addProductModal').style.display='flex'">Add Product</button>
+            <div style="display:flex; gap:16px; align-items: center;">
+                <div class="segment-group">
+                    <button class="segment-btn active" onclick="toggleView('card')" id="btn-card" title="Grid View">
+                        <i data-lucide="layout-grid" style="width:18px;"></i>
+                    </button>
+                    <div style="width:1px; background:#e2e8f0; margin:4px 0;"></div>
+                    <button class="segment-btn" onclick="toggleView('table')" id="btn-table" title="Table View">
+                        <i data-lucide="table" style="width:18px;"></i>
+                    </button>
+                </div>
+                <button class="add-btn" onclick="document.getElementById('addProductModal').style.display='flex'">Add Product</button>
+            </div>
         </div>
 
         <!-- Product Card Grid -->
-        <div class="product-card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:25px;">
+        <div id="view-card" class="product-card-grid responsive-grid">
             <?php foreach ($products as $product) {
                 include __DIR__ . '/components/product_card.php';
             } ?>
         </div>
+
+        <!-- Table View -->
+        <div id="view-table" class="table-container" style="display:none;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Product</th>
+                        <th>Category</th>
+                        <th>Supplier</th>
+                        <th style="text-align:right;">Price</th>
+                        <th style="text-align:right;">Stock</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($products as $product): ?>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-main);"><?= htmlspecialchars($product['product_name']) ?></div>
+                        </td>
+                        <td>
+                            <span style="display:inline-flex; align-items:center; gap:6px; background:#f1f5f9; padding:4px 10px; border-radius:20px; font-size:0.85rem; color:#475569;">
+                                <span style="width:6px; height:6px; background:#94a3b8; border-radius:50%;"></span>
+                                <?= htmlspecialchars($product['category_name']) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight:500; color:var(--text-sub);"><?= htmlspecialchars($product['supplier_name']) ?></div>
+                        </td>
+                        <td style="text-align:right; font-weight:600; color:var(--text-main);">
+                            रु <?= number_format($product['unit_price'], 2) ?>
+                        </td>
+                        <td style="text-align:right;">
+                            <?php 
+                            $stock = $product['total_stock'];
+                            $stockClass = $stock < 10 ? 'background:#fee2e2; color:#991b1b;' : 'background:#dcfce7; color:#166534;';
+                            ?>
+                            <span style="padding:4px 10px; border-radius:6px; font-weight:700; font-size:0.9rem; white-space: nowrap; <?= $stockClass ?>">
+                                <?= $stock ?> units
+                            </span>
+                        </td>
+                        <td style="text-align:right;">
+                            <div style="display:inline-flex; gap:8px;">
+                                <button class="action-btn" title="Edit" onclick="openEditModal(<?= $product['product_id'] ?>, '<?= addslashes($product['product_name']) ?>', '<?= $product['unit_price'] ?>', '<?= $product['category_id'] ?>', '<?= $product['supplier_id'] ?>')" style="background:#eff6ff; color:#2563eb; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                                    <i data-lucide="edit-2" style="width:16px;"></i>
+                                </button>
+                                <button class="action-btn" title="Delete" onclick="confirmDelete(<?= $product['product_id'] ?>)" style="background:#fee2e2; color:#dc2626; border:none; width:32px; height:32px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                                    <i data-lucide="trash-2" style="width:16px;"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            function toggleView(view) {
+                const cardView = document.getElementById('view-card');
+                const tableView = document.getElementById('view-table');
+                const btnCard = document.getElementById('btn-card');
+                const btnTable = document.getElementById('btn-table');
+
+                if (view === 'card') {
+                    cardView.style.display = 'grid';
+                    tableView.style.display = 'none';
+                    btnCard.classList.add('active');
+                    btnTable.classList.remove('active');
+                } else {
+                    cardView.style.display = 'none';
+                    tableView.style.display = 'block';
+                    btnTable.classList.add('active');
+                    btnCard.classList.remove('active');
+                }
+            }
+            
+            // Initialize icons when dom loads
+            document.addEventListener('DOMContentLoaded', () => {
+                if(window.lucide) lucide.createIcons();
+            });
+        </script>
 
         <!-- Add Product Modal -->
         <div id="addProductModal" class="modal-bg" style="display:none;">
@@ -149,7 +242,7 @@ function openEditModal(id, name, price, cat_id, sup_id) {
     document.getElementById('edit_unit_price').value = price;
     document.getElementById('edit_category_id').value = cat_id;
     document.getElementById('edit_supplier_id').value = sup_id;
-    document.getElementById('editProductModal').style.display = 'block';
+    document.getElementById('editProductModal').style.display = 'flex';
 }
 function confirmDelete(id) {
     if (confirm('Are you sure you want to delete this product?')) {
