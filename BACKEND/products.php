@@ -18,8 +18,16 @@ $suppliers = [];
 while ($row = mysqli_fetch_assoc($sup_result)) {
     $suppliers[] = $row;
 }
-// Fetch products with category and supplier
-$prod_result = mysqli_query($conn, "SELECT p.*, c.category_name, s.supplier_name FROM product p JOIN category c ON p.category_id = c.category_id JOIN supplier s ON p.supplier_id = s.supplier_id ORDER BY p.product_id DESC");
+// Fetch products with category, supplier, and total stock
+$prod_result = mysqli_query($conn, "
+    SELECT p.*, c.category_name, s.supplier_name, COALESCE(SUM(st.quantity), 0) as total_stock 
+    FROM product p 
+    JOIN category c ON p.category_id = c.category_id 
+    JOIN supplier s ON p.supplier_id = s.supplier_id 
+    LEFT JOIN stock st ON p.product_id = st.product_id 
+    GROUP BY p.product_id 
+    ORDER BY p.product_id DESC
+");
 $products = [];
 while ($row = mysqli_fetch_assoc($prod_result)) {
     $products[] = $row;

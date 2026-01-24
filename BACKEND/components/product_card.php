@@ -26,8 +26,15 @@
             <span class="stat-value" style="color: #059669;">रु <?= number_format($product['unit_price'], 2) ?></span>
         </div>
         <div class="stat-item" style="margin-left:auto; text-align:right;">
-            <span class="stat-label">ID</span>
-            <span class="stat-value">#<?= $product['product_id'] ?></span>
+            <span class="stat-label">Stock</span>
+            <?php 
+            $stock = $product['total_stock'] ?? 0;
+            $stockColor = $stock < 10 ? '#dc2626' : '#059669';
+            $stockBg = $stock < 10 ? '#fee2e2' : '#dcfce7';
+            ?>
+            <span class="stat-value" style="color: <?= $stockColor ?>; background: <?= $stockBg ?>; padding: 4px 10px; border-radius: 6px; font-weight: 700;">
+                <?= $stock ?> units
+            </span>
         </div>
     </div>
 </div>

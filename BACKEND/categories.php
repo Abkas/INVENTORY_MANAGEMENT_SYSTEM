@@ -6,10 +6,20 @@ if (!isset($_SESSION['user'])) {
 }
 require_once __DIR__ . '/db/connect.php';
 
-// Fetch categories
-$result = mysqli_query($conn, "SELECT * FROM category ORDER BY category_id DESC");
+// Fetch categories with product count and product names
+$result = mysqli_query($conn, "
+    SELECT c.*, 
+           COUNT(p.product_id) as product_count,
+           GROUP_CONCAT(p.product_name SEPARATOR '|||') as product_names
+    FROM category c 
+    LEFT JOIN product p ON c.category_id = p.category_id 
+    GROUP BY c.category_id 
+    ORDER BY c.category_id DESC
+");
 $categories = [];
 while ($row = mysqli_fetch_assoc($result)) {
+    // Split product names into an array
+    $row['products'] = !empty($row['product_names']) ? explode('|||', $row['product_names']) : [];
     $categories[] = $row;
 }
 ?>

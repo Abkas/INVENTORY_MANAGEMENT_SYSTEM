@@ -8,6 +8,9 @@
     <div>
         <div class="card-title"><?= htmlspecialchars($sale['product_name'] ?? 'Product #'.$sale['product_id']) ?></div>
         <div class="card-subtitle">
+            <span class="badge badge-primary" style="display: inline-block; margin-bottom: 6px;">
+                📁 <?= htmlspecialchars($sale['category_name'] ?? 'Uncategorized') ?>
+            </span>
             <div style="font-weight: 600; color: #1e293b;">👤 <?= htmlspecialchars($sale['customer_name'] ?? 'Customer #'.$sale['customer_id']) ?></div>
             <div style="font-size: 0.8rem; margin-top: 4px;">📅 <?= date('M d, Y', strtotime($sale['sales_date'])) ?></div>
         </div>
